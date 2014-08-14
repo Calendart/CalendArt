@@ -1,0 +1,39 @@
+{
+    "name": "wisembly/calendar",
+    "type": "library",
+    "description": "Manage remote calendars (google, ...) through an unified api",
+    "keywords": ["Calendar", "Events", "Schedule"],
+    "license": "MIT",
+
+    "authors": [
+        {
+            "name": "Baptiste Clavié",
+            "email": "baptiste@wisembly.com",
+            "homepage": "http://baptiste.xn--clavi-fsa.net/",
+            "role": "Project Lead"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.4.0",
+        "psr/log": "~1.0"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Calendar\\": ["src/", "test/"]
+        }
+    },
+
+    "config": {
+        "bin-dir": "bin"
+    },
+
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
+
