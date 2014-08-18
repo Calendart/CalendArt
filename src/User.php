@@ -21,9 +21,6 @@ namespace Calendar;
  */
 class User
 {
-    /** @var string User (unique) hash */
-    protected $id;
-
     /** @var string User's name */
     protected $name;
 
@@ -34,24 +31,16 @@ class User
     {
         $this->name  = $name;
         $this->email = $email;
-
-        $this->id = sha1($email . $name);
     }
 
     /** @return string */
-    final public function getId()
-    {
-        return $this->id;
-    }
-
-    /** @return string */
-    final public function getName()
+    public function getName()
     {
         return $this->name;
     }
 
     /** @return string */
-    final public function getEmail()
+    public function getEmail()
     {
         return $this->email;
     }
