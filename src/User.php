@@ -11,6 +11,9 @@
 
 namespace Calendar;
 
+use Doctrine\Common\Collections\Collection,
+    Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Represents a User
  *
@@ -27,10 +30,15 @@ class User
     /** @var string User's email */
     protected $email;
 
+    /** @var Collection<Event> Collection of events the user is involved in */
+    protected $events;
+
     public function __construct($name, $email)
     {
         $this->name  = $name;
         $this->email = $email;
+
+        $this->events = new ArrayCollection;
     }
 
     /** @return string */
@@ -43,6 +51,32 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /** @return Collection<Event> */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /** @return $this */
+    public function addEvent(Event $event)
+    {
+        if ($this->events->contains($event)) {
+            return;
+        }
+
+        $this->events->add($event);
+
+        return $this;
+    }
+
+    /** @return $this */
+    public function removeEvent(Event $event)
+    {
+        $this->events->removeElement($event);
+
+        return $this;
     }
 }
 

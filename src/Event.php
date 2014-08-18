@@ -14,6 +14,9 @@ namespace Calendar;
 use Datetime,
     InvalidArgumentException;
 
+use Doctrine\Common\Collections\Collection,
+    Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Represents an Event in a Calendar
  *
@@ -38,10 +41,15 @@ class Event
     /** @var User owner of this event */
     protected $owner;
 
+    /** @var Collection<EventParticipation> Participations registered to this event */
+    protected $participations;
+
     public function __construct(User $owner, $name, Datetime $start, Datetime $end)
     {
         $this->name  = $name;
         $this->owner = $owner;
+
+        $this->participations = new ArrayCollection;
 
         if ($start > $end) {
             throw new InvalidArgumentException('An event cannot start after it was ended');
@@ -49,8 +57,11 @@ class Event
 
         $this->end   = $end;
         $this->start = $start;
+
+        $owner->addEvent($event);
     }
 
+    /** @return string */
     public function getName()
     {
         return $this->name;
@@ -64,6 +75,7 @@ class Event
         return $this;
     }
 
+    /** @return string */
     public function getDescription()
     {
         return $this->description;
@@ -149,6 +161,38 @@ class Event
         $current = $current ?: new Datetime;
 
         return $this->hasStarted($current) && !$this->hasEnded($current);
+    }
+
+    /** @return Collection<EventParticipation> */
+    public function getParticipations()
+    {
+        return $this->participations;
+    }
+
+    /** @return $this */
+    public function addParticipation(EventParticipation $participation)
+    {
+        $user = $participation->getUser()->getEmail();
+
+        $callback = function (EventParticipation $participation) use ($email) {
+            return $email === $participation->getUser()->getEmail();
+        };
+
+        if ($this->participations->exists($callback)) {
+            return;
+        }
+
+        $this->participations->add($participation);
+
+        return $this;
+    }
+
+    /** @return $this */
+    public function removeParticipation(EventParticipation $participation)
+    {
+        $this->participations->removeElement($participation);
+
+        return $this;
     }
 }
 

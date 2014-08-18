@@ -59,6 +59,8 @@ class EventParticipation
 
         $this->setRole($role);
         $this->setStatus($status);
+
+        $user->addEvent($event);
     }
 
     /** @return Datetime|null null if the user has not answered yet to the invitation */
