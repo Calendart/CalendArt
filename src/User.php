@@ -63,7 +63,7 @@ class User
     public function addEvent(Event $event)
     {
         if ($this->events->contains($event)) {
-            return;
+            return $this;
         }
 
         $this->events->add($event);
