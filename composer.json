@@ -1,8 +1,8 @@
 {
-    "name": "wisembly/calendar",
+    "name": "wisembly/calendArt",
     "type": "library",
-    "description": "Manage remote calendars (google, ...) through an unified api",
-    "keywords": ["Calendar", "Events", "Schedule"],
+    "description": "Manage remote calendars (google, office 365, ...) through an unified api",
+    "keywords": ["Calendar", "Events", "Scheduler", "Schedule", "Agenda"],
     "license": "MIT",
 
     "authors": [
