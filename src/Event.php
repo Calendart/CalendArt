@@ -41,13 +41,17 @@ class Event
     /** @var User owner of this event */
     protected $owner;
 
+    /** @var Calendar Calendar associated to this event */
+    protected $calendar;
+
     /** @var Collection<EventParticipation> Participations registered to this event */
     protected $participations;
 
-    public function __construct(User $owner, $name, Datetime $start, Datetime $end)
+    public function __construct(Calendar $calendar, User $owner, $name, Datetime $start, Datetime $end)
     {
-        $this->name  = $name;
-        $this->owner = $owner;
+        $this->name     = $name;
+        $this->owner    = $owner;
+        $this->calendar = $calendar;
 
         $this->participations = new ArrayCollection;
 
@@ -59,6 +63,7 @@ class Event
         $this->start = $start;
 
         $owner->addEvent($event);
+        $calendar->getEvents()->add($this);
     }
 
     /** @return string */
@@ -161,6 +166,25 @@ class Event
         $current = $current ?: new Datetime;
 
         return $this->hasStarted($current) && !$this->hasEnded($current);
+    }
+
+    /** @return Calendar */
+    public function getCalendar()
+    {
+        return $this->calendar;
+    }
+
+    /**
+     * Detach this event from the associated Calendar
+     *
+     * @return $this
+     */
+    public function detach()
+    {
+        $this->calendar->getEvents()->removeEvent($this);
+        $this->calendar = null;
+
+        return $this;
     }
 
     /** @return Collection<EventParticipation> */

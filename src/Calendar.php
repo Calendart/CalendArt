@@ -11,6 +11,9 @@
 
 namespace Calendar;
 
+use Doctrine\Common\Collections\Collection,
+    Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Represents a Calendar
  *
@@ -21,14 +24,19 @@ namespace Calendar;
 class Calendar
 {
     /** @var string Calendar's name */
-    private $name;
+    protected $name;
 
     /** @var string Calendar's description */
-    private $description = '';
+    protected $description = '';
+
+    /** @var Collection<Event> Collection of events */
+    protected $events;
 
     public function __construct($name)
     {
         $this->name = $name;
+
+        $this->events = new ArrayCollection;
     }
 
     /** @return string */
@@ -55,6 +63,32 @@ class Calendar
     public function setDescription($description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /** @return Collection<Event> */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /** @return $this */
+    public function addEvent(Event $event)
+    {
+        if ($this->events->contains($event)) {
+            return $this;
+        }
+
+        $this->events->add($event);
+
+        return $this;
+    }
+
+    /** @return $this */
+    public function detachEvent(Event $event)
+    {
+        $this->events->removeElement($event);
 
         return $this;
     }
