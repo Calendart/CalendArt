@@ -32,11 +32,15 @@ class Calendar
     /** @var Collection<Event> Collection of events */
     protected $events;
 
+    /** @var Collection<UserPermission> Collection of permissions accorded to this calendar */
+    protected $permissions;
+
     public function __construct($name)
     {
         $this->name = $name;
 
-        $this->events = new ArrayCollection;
+        $this->events      = new ArrayCollection;
+        $this->permissions = new ArrayCollection;
     }
 
     /** @return string */
@@ -89,6 +93,32 @@ class Calendar
     public function detachEvent(Event $event)
     {
         $this->events->removeElement($event);
+
+        return $this;
+    }
+
+    /** @return Collection<UserPermission> */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /** @return $this */
+    public function addPermission(UserPermission $permission)
+    {
+        if ($this->permissions->contains($permission)) {
+            return;
+        }
+
+        $this->permissions->add($permission);
+
+        return $this;
+    }
+
+    /** @return $this */
+    public function removePermission($permission)
+    {
+        $this->permissions->removeElement($permission);
 
         return $this;
     }
