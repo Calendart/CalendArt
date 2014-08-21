@@ -28,16 +28,15 @@ interface EventApiInterface
      *
      * @return Collection<Event>
      */
-    public function getList(Calendar $calendar);
+    public function getList();
 
     /**
      * Returns the specific information for a given event
      *
-     * @param Calendar $calendar   Calendar to look into
-     * @param mixed    $identifier Identifier of the event to fetch
+     * @param mixed $identifier Identifier of the event to fetch
      *
      * @return Event
      */
-    public function get(Calendar $calendar, $identifier);
+    public function get($identifier);
 }
 
