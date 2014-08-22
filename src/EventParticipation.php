@@ -25,7 +25,7 @@ class EventParticipation
 {
     // status of the participation
     const STATUS_DECLINED  = -1;
-    const STATUS_UNDECIDED = 0;
+    const STATUS_TENTATIVE = 0;
     const STATUS_ACCEPTED  = 1;
 
     // available roles
@@ -48,9 +48,9 @@ class EventParticipation
     protected $answeredAt = null;
 
     /** @var integer */
-    protected $status = self::STATUS_UNDECIDED;
+    protected $status = self::STATUS_TENTATIVE;
 
-    public function __construct(Event $event, User $user, $role = self::ROLE_PARTICIPANT, $status = self::STATUS_UNDECIDED)
+    public function __construct(Event $event, User $user, $role = self::ROLE_PARTICIPANT, $status = self::STATUS_TENTATIVE)
     {
         $this->user  = $user;
         $this->event = $event;
@@ -170,7 +170,7 @@ class EventParticipation
      */
     public static function getAvailableStatuses()
     {
-        return [self::STATUS_DECLINED, self::STATUS_UNDECIDED, self::STATUS_ACCEPTED];
+        return [self::STATUS_DECLINED, self::STATUS_TENTATIVE, self::STATUS_ACCEPTED];
     }
 }
 
