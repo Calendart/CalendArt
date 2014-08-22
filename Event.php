@@ -15,7 +15,8 @@ use Datetime,
     DateTimeZone,
     InvalidArgumentException;
 
-use CalendArt\Event as BaseEvent;
+use CalendArt\Event as BaseEvent,
+    CalendArt\EventParticipation as BaseEventParticipation;
 
 /**
  * Event model from a Google adapter point of view
@@ -68,6 +69,16 @@ class Event extends BaseEvent
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /** @return $this */
+    public function addParticipation(BaseEventParticipation $participation)
+    {
+        if (!$participation instanceof EventParticipation) {
+            throw new InvalidArgumentException('Only a Google EventParticipation may be added as an attendee to a Google Event');
+        }
+
+        return parent::addParticipation($participation);
     }
 }
 
