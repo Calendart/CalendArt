@@ -29,6 +29,9 @@ class Calendar extends BaseCalendar
     /** @var DateTimeZone Calendar's timeZone */
     protected $timeZone;
 
+    /** @var When fetching a list, fetch only starting a certain token */
+    protected $nextSyncToken = '';
+
     public function __construct($id, $name, DateTimeZone $timeZone)
     {
         $this->id       = $id;
@@ -47,6 +50,20 @@ class Calendar extends BaseCalendar
     public function getTimeZone()
     {
         return $this->timeZone;
+    }
+
+    /** @return $this */
+    public function setSyncToken($token)
+    {
+        $this->nextSyncToken = $token;
+
+        return $this;
+    }
+
+    /** @return string next token to sync the data with */
+    public function getSyncToken()
+    {
+        return $this->nextSyncToken;
     }
 
     /**
