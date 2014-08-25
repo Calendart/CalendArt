@@ -30,7 +30,7 @@ class Calendar extends BaseCalendar
     protected $timeZone;
 
     /** @var When fetching a list, fetch only starting a certain token */
-    protected $nextSyncToken = '';
+    protected $nextSyncToken = null;
 
     public function __construct($id, $name, DateTimeZone $timeZone)
     {

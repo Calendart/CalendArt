@@ -40,18 +40,34 @@ class EventApi implements EventApiInterface
     /** {@inheritDoc} */
     public function getList()
     {
-        $response = $this->guzzle->get(sprintf('/calendars/%s/events', $this->calendar->getId()), ['query' => ['fields' => 'items(attendees,created,description,end,id,kind,location,organizer,recurrence,sequence,start,summary),nextPageToken,nextSyncToken']]);
+        $nextPageToken = null;
+        $list          = new ArrayCollection;
 
-        if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
-            throw new ApiErrorException($response);
-        }
+        do {
+            $query = ['fields' => 'items(attendees(displayName,email,id),created,creator(displayName,email),description,end,etag,iCalUID,id,location,start,status,summary),nextPageToken,nextSyncToken'];
 
-        $result = $response->json();
-        $list   = new ArrayCollection;
+            if (null !== $nextPageToken) {
+                $query['nextPageToken'] = $nextPageToken;
+            } elseif (null !== $this->calendar->getSyncToken()) {
+                $query['nextSyncToken'] = $this->calendar->getSyncToken();
+            }
 
-        foreach ($result['items'] as $item) {
-            $list[$item['id']] = Event::hydrate($item);
-        }
+            $response = $this->guzzle->get(sprintf('/calendars/%s/events', $this->calendar->getId()), ['query' => $query]);
+
+            if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
+                throw new ApiErrorException($response);
+            }
+
+            $result = $response->json();
+
+            foreach ($result['items'] as $item) {
+                $list[$item['id']] = Event::hydrate($item);
+            }
+
+            $nextPageToken = isset($result['nextPageToken']) ? $result['nextPageToken'] : null;
+        } while (null !== $nextPageToken);
+
+        $this->calendar->setSyncToken($result['nextSyncToken']);
 
         return $list;
     }
