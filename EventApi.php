@@ -31,7 +31,7 @@ class EventApi implements EventApiInterface
     /** @var Calendar */
     private $calendar;
 
-    protected static $query = ['fields' => 'attendees(displayName,email),created,creator(displayName,email),description,end,id,location,start,status,summary,updated'];
+    protected static $query = ['fields' => 'attendees(displayName,email,organizer,responseStatus),created,creator(displayName,email),description,end,id,location,start,status,summary,updated'];
 
     public function __construct(Guzzle $client, Calendar $calendar)
     {
