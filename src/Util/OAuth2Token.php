@@ -11,7 +11,8 @@
 
 namespace CalendArt\Util;
 
-use InvalidArgumentException;
+use Datetime,
+    InvalidArgumentException;
 
 /**
  * Stores the information about a OAuth2 Token
