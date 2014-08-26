@@ -9,7 +9,7 @@
  * @license   http://www.opensource.org/licenses/MIT-License MIT License
  */
 
-namespace CalendArt\Util;
+namespace CalendArt\Adapter\Google\Util;
 
 use Datetime,
     InvalidArgumentException;

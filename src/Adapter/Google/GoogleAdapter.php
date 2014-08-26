@@ -13,12 +13,12 @@ namespace CalendArt\Adapter\Google;
 
 use GuzzleHttp\Client as Guzzle;
 
-use CalendArt\Util\OAuth2Token,
-    CalendArt\Calendar as BaseCalendar,
+use CalendArt\Calendar as BaseCalendar,
 
     CalendArt\Adapter\AdapterInterface,
     CalendArt\Adapter\EventApiInterface,
-    CalendArt\Adapter\CalendarApiInterface;
+    CalendArt\Adapter\CalendarApiInterface,
+    CalendArt\Adapter\Google\Util\OAuth2Token;
 
 /**
  * Google Adapter - He knows how to dialog with google's calendars !
