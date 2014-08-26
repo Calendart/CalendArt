@@ -44,8 +44,8 @@ interface provided in this package.
 ```php
 <?php
 
-use CalendArt\Util\OAuth2Token,
-    CalendArt\Adapter\Google\GoogleAdapter;
+use CalendArt\Adapter\Google\GoogleAdapter,
+    CalendArt\Adapter\Google\Util\OAuth2Token;
 
 $oauth = new OAuth2Token('your-oauth2-token', 'Bearer', 3600); // You can get a OAuth2 token on google's oauth playground
 $adapter = new GoogleAdapter($oauth);
