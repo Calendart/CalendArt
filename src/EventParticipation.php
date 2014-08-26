@@ -118,23 +118,9 @@ class EventParticipation
      */
     public function setRole($role)
     {
-        if (!in_array($role, static::getAvailableRoles())) {
-            throw new InvalidArgumentException(sprintf('Role not recognized ; Had "%s", expected one of "%s"', $role, implode('", "', static::getAvailableRoles())));
-        }
-
         $this->role = $role;
 
         return $this;
-    }
-
-    /**
-     * Fetch the available roles
-     *
-     * @return integer[]
-     */
-    public static function getAvailableRoles()
-    {
-        return [self::ROLE_PARTICIPANT, self::ROLE_MANAGER];
     }
 
     /**
