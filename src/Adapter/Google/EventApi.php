@@ -57,7 +57,7 @@ class EventApi implements EventApiInterface
                 $query['nextPageToken'] = $nextPageToken;
             }
 
-            $response = $this->guzzle->get(sprintf('/calendars/%s/events', $this->calendar->getId()), ['query' => $query]);
+            $response = $this->guzzle->get(sprintf('calendars/%s/events', $this->calendar->getId()), ['query' => $query]);
 
             if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
                 throw new ApiErrorException($response);
@@ -80,7 +80,7 @@ class EventApi implements EventApiInterface
     /** {@inheritDoc} */
     public function get($identifier)
     {
-        $response = $this->guzzle->get(sprintf('/calendars/%s/events/%s', $this->calendar->getId(), $identifier), ['query' => static::$query]);
+        $response = $this->guzzle->get(sprintf('calendars/%s/events/%s', $this->calendar->getId(), $identifier), ['query' => static::$query]);
 
         if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
             throw new ApiErrorException($response);
