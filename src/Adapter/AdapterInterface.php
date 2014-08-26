@@ -11,6 +11,8 @@
 
 namespace CalendArt\Adapter;
 
+use CalendArt\Calendar;
+
 /**
  * Handle the dialog with an Adapter
  *
