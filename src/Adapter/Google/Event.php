@@ -100,10 +100,14 @@ class Event extends BaseEvent
             throw new InvalidArgumentException(sprintf('Missing at least one of the mandatory properties "id", "summary", "creator", "created", "start" or "end" ; got ["%s"]', implode('", "', array_keys($data))));
         }
 
+        if (!is_array($data['end']) || !is_array($data['start'])) {
+            throw new InvalidArgumentException('The start and the end dates should be an array');
+        }
+
         $owner = User::hydrate($data['creator']);
 
-        $end      = new Datetime($data['end']);
-        $start    = new Datetime($data['start']);
+        $end      = new Datetime(self::normalizeDates($data['end']));
+        $start    = new Datetime(self::normalizeDates($data['start']));
         $created  = new Datetime($data['created']);
         $userList = [$owner->getEmail() => $owner];
 
@@ -143,6 +147,19 @@ class Event extends BaseEvent
                 $event->addParticipation($participation);
             }
         }
+    }
+
+    private static function normalizeDates(array $date)
+    {
+        if (!isset($date['date']) && !isset($date['dateTime'])) {
+            throw new InvalidArgumentException(sprintf('This date seems to be malformed. Expected a `date` or `dateTime` key ; had [`%s`]', implode('`, `', array_keys($date))));
+        }
+
+        if (isset($date['date'])) {
+            return $date['date'];
+        }
+
+        return $date['dateTime'];
     }
 }
 
