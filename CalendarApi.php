@@ -38,7 +38,7 @@ class CalendarApi implements CalendarApiInterface
     /** {@inheritDoc} */
     public function getList()
     {
-        $response = $this->guzzle->get('users/me/calendarList', ['query' => ['fields' => 'items(description,id,summary,timeZone)']]);
+        $response = $this->guzzle->get('calendarList', ['query' => ['fields' => 'items(description,id,summary,timeZone)']]);
 
         if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
             throw new ApiErrorException($response);
@@ -57,7 +57,7 @@ class CalendarApi implements CalendarApiInterface
     /** {@inheritDoc} */
     public function get($identifier)
     {
-        $response = $this->guzzle->get(sprintf('users/me/calendars/%s', $identifier), ['query' => ['fields' => 'description,id,summary,timeZone']]);
+        $response = $this->guzzle->get(sprintf('calendars/%s', $identifier), ['query' => ['fields' => 'description,id,summary,timeZone']]);
 
         if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
             throw new ApiErrorException($response);
