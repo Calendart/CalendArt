@@ -62,7 +62,7 @@ class Event
         $this->end   = $end;
         $this->start = $start;
 
-        $owner->addEvent($event);
+        $owner->addEvent($this);
         $calendar->getEvents()->add($this);
     }
 
