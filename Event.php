@@ -149,6 +149,8 @@ class Event extends BaseEvent
                 $event->addParticipation($participation);
             }
         }
+
+        return $event;
     }
 
     private static function normalizeDates(array $date)
