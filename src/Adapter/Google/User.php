@@ -11,6 +11,8 @@
 
 namespace CalendArt\Adapter\Google;
 
+use InvalidArgumentException;
+
 use CalendArt\User as BaseUser;
 
 /**
@@ -25,13 +27,17 @@ class User extends BaseUser
 
     public function getId()
     {
-        return $this->id;
+        return $this->id ?: sha1($this->getEmail() . $this->getName());
     }
 
     public static function hydrate(array $data)
     {
-        if (!isset($data['displayName'], $data['email'])) {
-            throw new InvalidArgumentException(sprintf('Missing at least one of the mandatory properties "displayName", "email" ; got ["%s"]', implode('", "', array_keys($data))));
+        if (!isset($data['displayName'])) {
+            $data['displayName'] = null;
+        }
+
+        if (!isset($data['email'])) {
+            $data['email'] = null;
         }
 
         $user = new static($data['displayName'], $data['email']);

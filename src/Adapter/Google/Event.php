@@ -109,7 +109,7 @@ class Event extends BaseEvent
         $end      = new Datetime(self::normalizeDates($data['end']));
         $start    = new Datetime(self::normalizeDates($data['start']));
         $created  = new Datetime($data['created']);
-        $userList = [$owner->getEmail() => $owner];
+        $userList = [$owner->getId() => $owner];
 
         $event = new static($calendar, $owner, $created, $start, $end, $data['id'], $data['summary']);
 
@@ -133,7 +133,9 @@ class Event extends BaseEvent
             }
 
             foreach ($data['attendees'] as $attendee) {
-                $attendee = isset($userList[$attendee['email']]) ? $userList[$attendee['email']] : User::hydrate($attendee);
+                if (!isset($userList[$id = self::buildAttendeeId($attendee)])) {
+                    $userList[$id] = User::hydrate($attendee);
+                }
 
                 $role = EventParticipation::ROLE_PARTICIPANT;
 
@@ -141,9 +143,9 @@ class Event extends BaseEvent
                     $role |= EventParticipation::ROLE_MANAGER;
                 }
 
-                $participant = new EventParticipation($event, $attendee, $role, EventParticipation::translateStatus($attendee['responseStatus']));
+                $participation = new EventParticipation($event, $userList[$id], $role, EventParticipation::translateStatus($attendee['responseStatus']));
 
-                $attendee->addEvent($event);
+                $userList[$id]->addEvent($event);
                 $event->addParticipation($participation);
             }
         }
@@ -160,6 +162,25 @@ class Event extends BaseEvent
         }
 
         return $date['dateTime'];
+    }
+
+    private static function buildAttendeeId(array $attendee)
+    {
+        if (isset($attendee['id'])) {
+            return $attendee['id'];
+        }
+
+        $parts = [];
+
+        if (isset($attendee['email'])) {
+            $parts[] = $attendee['email'];
+        }
+
+        if (isset($attendee['displayName'])) {
+            $parts[] = $attendee['displayName'];
+        }
+
+        return sha1(implode('', $parts));
     }
 }
 
