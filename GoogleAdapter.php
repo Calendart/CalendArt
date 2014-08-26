@@ -24,8 +24,6 @@ use CalendArt\Util\OAuth2Token,
  * Google Adapter - He knows how to dialog with google's calendars !
  *
  * This requires to have an OAuth2 token established with the following scopes :
- *  - email
- *  - profile
  *  - https://www.googleapis.com/auth/calendar
  *
  * But, as this currently only support reading from the apis, you can may use
