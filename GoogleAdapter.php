@@ -14,9 +14,7 @@ namespace CalendArt\Adapter\Google;
 use GuzzleHttp\Client as Guzzle;
 
 use CalendArt\Util\OAuth2Token,
-
-    CalendArt\Adapter\Google\Calendar,
-    CalendArt\Adapter\Google\CalendarApi,
+    CalendArt\Calendar as BaseCalendar,
 
     CalendArt\Adapter\AdapterInterface,
     CalendArt\Adapter\EventApiInterface,
@@ -44,6 +42,9 @@ class GoogleAdapter implements AdapterInterface
     /** @var CalendarApi CalendarApi to use */
     private $calendarApi;
 
+    /** @var EventApi[] */
+    private $eventApis;
+
     public function __construct(OAuth2Token $token)
     {
         $this->guzzle = new Guzzle(['base_url' => 'https://www.googleapis.com/calendar/v3/',
@@ -62,8 +63,17 @@ class GoogleAdapter implements AdapterInterface
     }
 
     /** {@inheritDoc} */
-    public function getEventApi(Calendar $calendar)
+    public function getEventApi(BaseCalendar $calendar)
     {
+        if (!$calendar instanceof Calendar) {
+            throw new InvalidArgumentException('Wrong calendar provided, expected a google calendar');
+        }
+
+        if (!isset($this->eventApis[$calendar->getId()])) {
+            $this->eventApis[$calendar->getId()] = new EventApi($this->guzzle, $calendar);
+        }
+
+        return $this->eventApis[$calendar->getId()];
     }
 }
 
