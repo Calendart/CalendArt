@@ -196,9 +196,9 @@ class Event
     /** @return $this */
     public function addParticipation(EventParticipation $participation)
     {
-        $user = $participation->getUser()->getEmail();
+        $email = $participation->getUser()->getEmail();
 
-        $callback = function (EventParticipation $participation) use ($email) {
+        $callback = function ($key, EventParticipation $participation) use ($email) {
             return $email === $participation->getUser()->getEmail();
         };
 
