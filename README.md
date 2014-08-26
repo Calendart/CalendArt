@@ -37,9 +37,24 @@ You have multiple ways to install CalendArt. If you are unsure what to do, go wi
 
 Basic Usage
 ===========
-As the adapters were not (yet) developped, it is hard to make an example. But
-basically, the example will be based on the Google Adapter, as we're
-developping this one very soon.
+As there is only Google's adapter, we're going to base these examples on this
+one. But it should be similar to the others one, as long as they respect the
+interface provided in this package.
+
+```php
+<?php
+
+use CalendArt\Util\OAuth2Token,
+    CalendArt\Adapter\Google\GoogleAdapter;
+
+$oauth = new OAuth2Token('your-oauth2-token', 'Bearer', 3600); // You can get a OAuth2 token on google's oauth playground
+$adapter = new GoogleAdapter($oauth);
+
+$primary = $adapter->getCalendarApi()->get('primary'); // there is always a "primary" calendar on Google
+$event   = $adapter->getEventApi($primary)->getList();
+
+var_dump($primary); // Should dump a Calendar instance, with its hydrated events
+```
 
 Running Tests
 =============
