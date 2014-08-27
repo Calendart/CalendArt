@@ -21,22 +21,6 @@ use CalendArt\Adapter\AbstractCriteria;
 class Field extends AbstractCriteria
 {
     /** {@inheritDoc} */
-    protected function _merge(AbstractCriteria $criteria)
-    {
-        $return = clone $this;
-
-        foreach ($criteria as $subCriteria) {
-            if ($return->hasCriteria($subCriteria)) {
-                continue;
-            }
-
-            $return->addCriteria(clone $subCriteria);
-        }
-
-        return $return;
-    }
-
-    /** {@inheritDoc} */
     public function build()
     {
         $criteria = $this->getName();

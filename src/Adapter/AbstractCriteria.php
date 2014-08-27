@@ -11,6 +11,8 @@
 
 namespace CalendArt\Adapter;
 
+use CalendArt\Adapter\Exception\CriteriaNotFoundException;
+
 use IteratorAggregate;
 
 /**
@@ -69,24 +71,30 @@ abstract class AbstractCriteria implements IteratorAggregate
     }
 
     /**
-     * Check if there is a specific criteria in the current collection of subcriterias
+     * Get a specific subcriteria
      *
-     * @return boolean true if it is already registered, false otherwise
+     * @param string $name Name of the criteria to find. If it is already a Criteria, its name will be used
+     *
+     * @return static The found criteria
+     * @throws CriteriaNotFoundException if the criteria is not found
      */
-    protected function hasCriteria(self $search)
+    protected function getCriteria($name)
     {
-        if (in_array($search, $this->criterias)) {
-            return true;
+        if ($name instanceof self) {
+            $name = $name->getName();
         }
 
         foreach ($this->criterias as $criteria) {
-            if ($search->getName() !== $criteria->getName()) {
+            if ($name !== $criteria->getName()) {
+                continue;
             }
 
-            return true;
+            return $criteria;
         }
 
-        return false;
+        $list = array_map(function (self $criteria) { return $criteria->getName(); }, $this->criterias);
+
+        throw new CriteriaNotFoundException($list, $name);
     }
 
     /**
@@ -135,15 +143,33 @@ abstract class AbstractCriteria implements IteratorAggregate
             return clone $criteria;
         }
 
-        return $this->_merge($criteria);
-    }
+        $merge = clone $this;
 
-    /**
-     * Effectively do the merge with another criteria
-     *
-     * @return static
-     */
-    abstract protected function _merge(self $criteria);
+        /*
+         * Here is where the fun begins...
+         *
+         * The idea is, at this point, this criteria and the one that we want to
+         * merge are both recursive, which means that they are not complete.
+         *
+         * The part where it is becoming funny (or cranky, it depends on the
+         * point of view...) is if the current criteria already has one of the
+         * sub-criterias. If that is the case, then we'll need to merge the
+         * sub-criteria of the criteria we want to merge ; it it is not within
+         * our current criteria, then we just need to add its clone.
+         *
+         * That's a lot of criterias in the same text, I know.
+         */
+        foreach ($criteria->criterias as $subCriteria) {
+            try {
+                $merge->getCriteria($subCriteria)->merge($subCriteria);
+            } catch (CriteriaNotFoundException $e) {
+                $merge->addCriteria(clone $subCriteria);
+            }
+        }
+
+        return $merge;
+
+    }
 
     /**
      * Build the criteria to be understandable by the adapter
