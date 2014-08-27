@@ -13,7 +13,8 @@ namespace CalendArt\Adapter\Google\Exception;
 
 use ErrorException;
 
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\Message\Response,
+    GuzzleHttp\Exception\ParseException;
 
 /**
  * Whenever the Api returns an unexpected result
@@ -24,7 +25,14 @@ class ApiErrorException extends ErrorException
 {
     public function __construct(Response $response)
     {
-        parent::__construct(sprintf('The request failed and returned an invalid status code ("%d") : %s', $response->getStatusCode(), $response->json()['error']['message']), $response->getStatusCode());
+        try {
+            $json    = $response->json();
+            $message = $json['error']['message'];
+        } catch (ParseException $e) {
+            $message = $response->getReasonPhrase();
+        }
+
+        parent::__construct(sprintf('The request failed and returned an invalid status code ("%d") : %s', $response->getStatusCode(), $message), $response->getStatusCode());
     }
 }
 

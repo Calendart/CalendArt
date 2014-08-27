@@ -46,7 +46,8 @@ class GoogleAdapter implements AdapterInterface
     public function __construct(OAuth2Token $token)
     {
         $this->guzzle = new Guzzle(['base_url' => 'https://www.googleapis.com/calendar/v3/',
-                                    'defaults' => ['headers' => ['Authorization' => sprintf('%s %s', $token->type, $token->token)]]]);
+                                    'defaults' => ['headers'    => ['Authorization' => sprintf('%s %s', $token->type, $token->token)],
+                                                   'exceptions' => false]]);
     }
 
     /** {@inheritDoc} */
