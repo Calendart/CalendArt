@@ -9,33 +9,33 @@
  * @license   http://www.opensource.org/licenses/MIT-License MIT License
  */
 
-namespace CalendArt\Adapter\Google\Criteria;
+namespace CalendArt\Adapter\Google\Criterion;
 
-use CalendArt\Adapter\AbstractCriteria;
+use CalendArt\Adapter\AbstractCriterion;
 
 /**
- * Represents a Field criteria
+ * Represents a Field criterion
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class Field extends AbstractCriteria
+class Field extends AbstractCriterion
 {
     /** {@inheritDoc} */
     public function build()
     {
-        $criteria = $this->getName();
+        $criterion = $this->getName();
 
         if ($this->isRecursive()) {
             $subfields = [];
 
-            foreach ($this->criterias as $criteria) {
-                $subfields[] = $criteria->build();
+            foreach ($this->criteria as $criterion) {
+                $subfields[] = $criterion->build();
             }
 
-            $criteria .= sprintf('(%s)', implode(',', $subfields));
+            $criterion .= sprintf('(%s)', implode(',', $subfields));
         }
 
-        return $criteria;
+        return $criterion;
     }
 }
 

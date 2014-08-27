@@ -14,16 +14,16 @@ namespace CalendArt\Adapter\Exception;
 use RuntimeException;
 
 /**
- * Used when a criteria is not found within another criteria
+ * Used when a criterion is not found within another criterion
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class CriteriaNotFoundException extends RuntimeException
+class CriterionNotFoundException extends RuntimeException
 {
-    /** @var string[] list of available criterias */
+    /** @var string[] list of available criterions */
     private $available;
 
-    /** @var string Name of the not found criteria */
+    /** @var string Name of the not found criterion */
     private $name;
 
     public function __construct(array $list, $name)
@@ -31,7 +31,7 @@ class CriteriaNotFoundException extends RuntimeException
         $this->name      = $name;
         $this->available = $list;
 
-        parent::__construct(sprintf('The criteria `%s` was not found. Available criterias are the following : [`%s`]', $name, implode('`, `', $list)), 404);
+        parent::__construct(sprintf('The criterion `%s` was not found. Available criterions are the following : [`%s`]', $name, implode('`, `', $list)), 404);
     }
 
     public function getName()
@@ -39,7 +39,7 @@ class CriteriaNotFoundException extends RuntimeException
         return $this->name;
     }
 
-    public function getAvailableCriterias()
+    public function getAvailableCriterions()
     {
         return $this->available;
     }
