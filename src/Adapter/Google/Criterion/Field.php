@@ -23,19 +23,37 @@ class Field extends AbstractCriterion
     /** {@inheritDoc} */
     public function build()
     {
-        $criterion = $this->getName();
-
-        if ($this->isRecursive()) {
-            $subfields = [];
-
-            foreach ($this->criteria as $criterion) {
-                $subfields[] = $criterion->build();
-            }
-
-            $criterion .= sprintf('(%s)', implode(',', $subfields));
+        if (!$this->isRecursive()) {
+            return $this->getName();
         }
 
-        return $criterion;
+        $subfields = [];
+
+        foreach ($this->criteria as $criterion) {
+            $subfields[] = $criterion->build();
+        }
+
+        /*
+         * Google field query is built like this :
+         *
+         * - If it is not a recursive field (we want everything in this field,
+         *   or it does not have any sub-component), then it is simply a field
+         *   name, which is handled in the top condition of this method
+         *
+         * - If it is a recursive field, but does not have any "root" (we are
+         *   on the root of the tree, so we only have children), then it is
+         *   simply a list of comma separated fields' name
+         *
+         * - Eventually, if it is not the root (hence the field have a name),
+         *   it is formed as name(list,of,fields)
+         */
+        $str = '%s';
+
+        if (null !== $this->getName()) {
+            $str = sprintf('%s(%%s)', $this->getName());
+        }
+
+        return sprintf($str, implode(',', $subfields));
     }
 }
 
