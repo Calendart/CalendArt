@@ -41,7 +41,7 @@ abstract class AbstractCriterion implements IteratorAggregate
         $criteria = [];
 
         foreach ($this->criteria as $criterion) {
-            $criteria[] = clone $criterion;
+            $criteria[$criterion->getName()] = clone $criterion;
         }
 
         $this->criteria = $criteria;
@@ -65,7 +65,7 @@ abstract class AbstractCriterion implements IteratorAggregate
      */
     public function addCriterion(self $criterion)
     {
-        $this->criteria[] = $criterion;
+        $this->criteria[$criterion->getName()] = $criterion;
 
         return $this;
     }
@@ -84,17 +84,34 @@ abstract class AbstractCriterion implements IteratorAggregate
             $name = $name->getName();
         }
 
-        foreach ($this->criteria as $criterion) {
-            if ($name !== $criterion->getName()) {
-                continue;
-            }
-
-            return $criterion;
+        if (!isset($this->criteria[$name])) {
+            throw new CriterionNotFoundException(array_keys($this->criteria), $name);
         }
 
-        $list = array_map(function (self $criterion) { return $criterion->getName(); }, $this->criteria);
+        return $this->criteria[$name];
+    }
 
-        throw new CriterionNotFoundException($list, $name);
+    /**
+     * Delete a criterion from the criteria stack
+     *
+     * @param string|self $name Name of the criterion to delete
+     *
+     * @return $this
+     * @throws CriterionNotFoundException If the criterion is not found
+     */
+    protected function deleteCriterion($name)
+    {
+        if ($name instanceof self) {
+            $name = $name->getName();
+        }
+
+        if (!isset($this->criteria[$name])) {
+            throw new CriterionNotFoundException(array_keys($this->criteria), $name);
+        }
+
+        unset($this->criteria[$name]);
+
+        return $this;
     }
 
     /**
@@ -149,19 +166,22 @@ abstract class AbstractCriterion implements IteratorAggregate
          * Here is where the fun begins...
          *
          * The idea is, at this point, this criterion and the one that we want to
-         * merge are both recursive, which means that they are not complete.
+         * merge are both recursive.
          *
          * The part where it is becoming funny (or cranky, it depends on the
          * point of view...) is if the current criterion already has one of the
          * sub-criteria. If that is the case, then we'll need to merge the
-         * sub-criterion of the criterion we want to merge ; it it is not within
+         * sub-criterion of the criterion we want to merge ; if it is not within
          * our current criterion, then we just need to add its clone.
          *
          * That's a lot of criteria in the same text, I know.
          */
         foreach ($criterion->criteria as $subCriterion) {
             try {
-                $merge->getCriterion($subCriterion)->merge($subCriterion);
+                $tmp = $merge->getCriterion($subCriterion);
+
+                $merge->deleteCriterion($tmp);
+                $merge->addCriterion($tmp->merge($subCriterion));
             } catch (CriterionNotFoundException $e) {
                 $merge->addCriterion(clone $subCriterion);
             }
