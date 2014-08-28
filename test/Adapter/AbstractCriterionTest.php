@@ -15,7 +15,8 @@ use ReflectionMethod;
 
 use PHPUnit_Framework_TestCase;
 
-use CalendArt\Adapter\Exception\CriterionNotFoundException;
+use CalendArt\Adapter\AbstractCriterion,
+    CalendArt\Adapter\Exception\CriterionNotFoundException;
 
 class AbstractCriterionTest extends PHPUnit_Framework_TestCase
 {
@@ -86,6 +87,44 @@ class AbstractCriterionTest extends PHPUnit_Framework_TestCase
     public function methodProvider()
     {
         return [['get'], ['delete']];
+    }
+
+    /**
+     * @expectedException        InvalidArgumentException
+     * @expectedExceptionMessage Can't merge two different criteria. Had `foo` and `bar`
+     */
+    public function testMergeNotSameName()
+    {
+        $this->stub->merge($this->getMockForAbstractClass('CalendArt\\Adapter\\AbstractCriterion', ['bar']));
+    }
+
+    /**
+     * @dataProvider mergeProvider
+     *
+     * @param integer $expected Number of expected criteria
+     */
+    public function testMerge(AbstractCriterion $source = null, AbstractCriterion $criterion = null, $expected)
+    {
+        $source    = $source ?: $this->stub;
+        $criterion = $criterion ?: $this->stub;
+
+        $merge = $source->merge($criterion);
+
+        $this->assertCount($expected, iterator_to_array($merge));
+    }
+
+    public function mergeProvider()
+    {
+        $recursive = $this->getMockForAbstractClass('CalendArt\\Adapter\\AbstractCriterion',
+                                                    ['foo', [$this->getMockForAbstractClass('CalendArt\\Adapter\\AbstractCriterion', ['bar']),
+                                                             $this->getMockForAbstractClass('CalendArt\\Adapter\\AbstractCriterion', ['fubar'])]]);
+
+        $notRecursive = $this->getMockForAbstractClass('CalendArt\\Adapter\\AbstractCriterion', ['foo']);
+
+        return [[$notRecursive, $notRecursive, 0],
+                [$notRecursive, $this->stub, 0],
+                [$recursive, $notRecursive, 0],
+                [$this->stub, $recursive, 3]];
     }
 }
 
