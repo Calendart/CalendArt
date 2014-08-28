@@ -14,7 +14,9 @@ namespace CalendArt\Adapter;
 use CalendArt\Adapter\Exception\CriterionNotFoundException;
 
 use ArrayIterator,
-    IteratorAggregate;
+    IteratorAggregate,
+
+    InvalidArgumentException;
 
 /**
  * Represents a criterion for a query. Can be recursive
