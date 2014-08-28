@@ -13,7 +13,8 @@ namespace CalendArt\Adapter;
 
 use CalendArt\Adapter\Exception\CriterionNotFoundException;
 
-use IteratorAggregate;
+use ArrayIterator,
+    IteratorAggregate;
 
 /**
  * Represents a criterion for a query. Can be recursive
