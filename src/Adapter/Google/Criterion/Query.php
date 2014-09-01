@@ -20,11 +20,6 @@ use CalendArt\Adapter\AbstractCriterion;
  */
 class Query extends AbstractCriterion
 {
-    public function __construct(array $criteria)
-    {
-        parent::__construct('query', $criteria);
-    }
-
     public function build()
     {
         $query = [];
