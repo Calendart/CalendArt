@@ -28,7 +28,7 @@ interface EventApiInterface
      *
      * @return Collection<Event>
      */
-    public function getList();
+    public function getList(AbstractCriterion $criterion = null);
 
     /**
      * Returns the specific information for a given event
@@ -37,6 +37,6 @@ interface EventApiInterface
      *
      * @return Event
      */
-    public function get($identifier);
+    public function get($identifier, AbstractCriterion $criterion = null);
 }
 

@@ -16,7 +16,11 @@ use GuzzleHttp\Client as Guzzle;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use CalendArt\Adapter\EventApiInterface,
-    CalendArt\Adapter\Google\Exception\ApiErrorException;
+    CalendArt\Adapter\Google\Exception\ApiErrorException,
+
+    CalendArt\Adapter\AbstractCriterion,
+    CalendArt\Adapter\Google\Criterion\Field,
+    CalendArt\Adapter\Google\Criterion\Query;
 
 /**
  * Google Adapter for the Calendars
@@ -40,7 +44,7 @@ class EventApi implements EventApiInterface
     }
 
     /** {@inheritDoc} */
-    public function getList()
+    public function getList(AbstractCriterion $criterion = null)
     {
         $nextPageToken = null;
         $query         = static::$query;
@@ -78,7 +82,7 @@ class EventApi implements EventApiInterface
     }
 
     /** {@inheritDoc} */
-    public function get($identifier)
+    public function get($identifier, AbstractCriterion $criterion = null)
     {
         $response = $this->guzzle->get(sprintf('calendars/%s/events/%s', $this->calendar->getId(), $identifier), ['query' => static::$query]);
 
