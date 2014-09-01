@@ -27,7 +27,7 @@ interface CalendarApiInterface
      *
      * @return Collection<Calendar>
      */
-    public function getList();
+    public function getList(AbstractCriterion $criterion = null);
 
     /**
      * Returns the specific information for a given calendar
@@ -36,6 +36,6 @@ interface CalendarApiInterface
      *
      * @return Calendar
      */
-    public function get($identifier);
+    public function get($identifier, AbstractCriterion $criterion = null);
 }
 
