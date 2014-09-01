@@ -18,6 +18,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use CalendArt\Adapter\Google\Calendar,
     CalendArt\Adapter\Google\Exception\ApiErrorException,
 
+    CalendArt\Adapter\AbstractCriterion,
+    CalendArt\Adapter\Google\Criterion\Field,
+    CalendArt\Adapter\Google\Criterion\Query,
+
     CalendArt\Adapter\CalendarApiInterface;
 
 /**
@@ -36,7 +40,7 @@ class CalendarApi implements CalendarApiInterface
     }
 
     /** {@inheritDoc} */
-    public function getList()
+    public function getList(AbstractCriterion $criterion = null)
     {
         $response = $this->guzzle->get('calendarList', ['query' => ['fields' => 'items(description,id,summary,timeZone)']]);
 
@@ -55,7 +59,7 @@ class CalendarApi implements CalendarApiInterface
     }
 
     /** {@inheritDoc} */
-    public function get($identifier)
+    public function get($identifier, AbstractCriterion $criterion = null)
     {
         $response = $this->guzzle->get(sprintf('calendars/%s', $identifier), ['query' => ['fields' => 'description,id,summary,timeZone']]);
 
