@@ -20,7 +20,7 @@ use CalendArt\Adapter\Google\Calendar,
 
     CalendArt\Adapter\AbstractCriterion,
     CalendArt\Adapter\Google\Criterion\Field,
-    CalendArt\Adapter\Google\Criterion\Query,
+    CalendArt\Adapter\Google\Criterion\Collection,
 
     CalendArt\Adapter\CalendarApiInterface;
 
@@ -36,13 +36,24 @@ class CalendarApi implements CalendarApiInterface
 
     public function __construct(Guzzle $client)
     {
-        $this->guzzle = $client;
+        $this->guzzle   = $client;
+
+        $this->criteria = [new Field('id'),
+                           new Field('summary'),
+                           new Field('timeZone'),
+                           new Field('description')];
     }
 
     /** {@inheritDoc} */
     public function getList(AbstractCriterion $criterion = null)
     {
-        $response = $this->guzzle->get('calendarList', ['query' => ['fields' => 'items(description,id,summary,timeZone)']]);
+        $query = new Collection([new Collection([new Field('items', $this->criteria)], 'fields')]);
+
+        if (null !== $criterion) {
+            $query = $query->merge($criterion);
+        }
+
+        $response = $this->guzzle->get('users/me/calendarList', ['query' => $query->build()]);
 
         if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
             throw new ApiErrorException($response);
@@ -61,7 +72,13 @@ class CalendarApi implements CalendarApiInterface
     /** {@inheritDoc} */
     public function get($identifier, AbstractCriterion $criterion = null)
     {
-        $response = $this->guzzle->get(sprintf('calendars/%s', $identifier), ['query' => ['fields' => 'description,id,summary,timeZone']]);
+        $query = new Collection([new Collection([new Field(null, $this->criteria)], 'fields')]);
+
+        if (null !== $criterion) {
+            $query = $query->merge($criterion);
+        }
+
+        $response = $this->guzzle->get(sprintf('calendars/%s', $identifier), ['query' => $query->build()]);
 
         if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
             throw new ApiErrorException($response);
