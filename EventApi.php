@@ -20,7 +20,7 @@ use CalendArt\Adapter\EventApiInterface,
 
     CalendArt\Adapter\AbstractCriterion,
     CalendArt\Adapter\Google\Criterion\Field,
-    CalendArt\Adapter\Google\Criterion\Query;
+    CalendArt\Adapter\Google\Criterion\Collection;
 
 /**
  * Google Adapter for the Calendars
@@ -35,33 +35,63 @@ class EventApi implements EventApiInterface
     /** @var Calendar */
     private $calendar;
 
-    protected static $query = ['fields' => 'attendees(displayName,email,organizer,responseStatus),created,creator(displayName,email),description,end,id,location,start,status,summary,updated'];
+    /** @var Field[] */
+    private $fields;
 
     public function __construct(Guzzle $client, Calendar $calendar)
     {
         $this->guzzle   = $client;
         $this->calendar = $calendar;
+
+        $this->fields = [new Field('id'),
+                         new Field('end'),
+                         new Field('start'),
+                         new Field('status'),
+                         new Field('created'),
+                         new Field('updated'),
+                         new Field('summary'),
+                         new Field('location'),
+                         new Field('description'),
+                         new Field('creator', [new Field('email'),
+                                               new Field('displayName')]),
+
+                         new Field('attendees', [new Field('email'),
+                                                 new Field('organizer'),
+                                                 new Field('displayName'),
+                                                 new Field('responseStatus')])];
     }
 
     /** {@inheritDoc} */
     public function getList(AbstractCriterion $criterion = null)
     {
         $nextPageToken = null;
-        $query         = static::$query;
+        $query         = new Collection([]);
         $list          = new ArrayCollection;
 
         if (null !== $this->calendar->getSyncToken()) {
-            $query['nextSyncToken'] = $this->calendar->getSyncToken();
+            $query->addCriterion(new Collection([new Field($this->calendar->getSyncToken())], 'nextSyncToken'));
         }
 
-        $query['fields'] = sprintf('items(%s),nextSyncToken,nextPageToken', $query['fields']);
+        $fields = [new Field('nextSyncToken'),
+                   new Field('nextPageToken'),
+                   new Field('items', $this->fields)];
+
+        $query->addCriterion(new Collection([new Field(null, $fields)], 'fields'));
+
+        if (null !== $criterion) {
+            $query = $query->merge($criterion);
+        }
+
+        $query = $query->build();
 
         do {
+            $current = $query;
+
             if (null !== $nextPageToken) {
-                $query['nextPageToken'] = $nextPageToken;
+                $current['nextPageToken'] = $nextPageToken;
             }
 
-            $response = $this->guzzle->get(sprintf('calendars/%s/events', $this->calendar->getId()), ['query' => $query]);
+            $response = $this->guzzle->get(sprintf('calendars/%s/events', $this->calendar->getId()), ['query' => $current]);
 
             if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
                 throw new ApiErrorException($response);
@@ -84,7 +114,13 @@ class EventApi implements EventApiInterface
     /** {@inheritDoc} */
     public function get($identifier, AbstractCriterion $criterion = null)
     {
-        $response = $this->guzzle->get(sprintf('calendars/%s/events/%s', $this->calendar->getId(), $identifier), ['query' => static::$query]);
+        $query = new Collection($this->fields, 'fields');
+
+        if (null !== $criterion) {
+            $query = $query->merge($criterion);
+        }
+
+        $response = $this->guzzle->get(sprintf('calendars/%s/events/%s', $this->calendar->getId(), $identifier), ['query' => $query->build()]);
 
         if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
             throw new ApiErrorException($response);
