@@ -9,26 +9,20 @@
  * @license   http://www.opensource.org/licenses/MIT-License MIT License
  */
 
-namespace CalendArt\Adapter\Google\Criterion;
-
-use CalendArt\Adapter\AbstractCriterion;
+namespace CalendArt\Adapter\Google\Criterion\Collection;
 
 /**
- * Represents a Query criterion
+ * Represents an element of a built collection criterion
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class Query extends AbstractCriterion
+abstract class Element
 {
-    public function build()
+    public $value;
+
+    public function __construct($value)
     {
-        $query = [];
-
-        foreach ($this->criteria as $criterion) {
-            $query[$criterion->getName()] = $criterion->build();
-        }
-
-        return $query;
+        $this->value = $value;
     }
 }
 
