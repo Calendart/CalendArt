@@ -42,17 +42,13 @@ class Collection extends AbstractCriterion
             $render[] = new Reducible($criterion->build());
         }
 
+        $result = array_map(function ($item) { return $item->value; }, $render);
+
         if (1 === count($render) && reset($render) instanceof Reducible) {
-            $render = $render[0]->value;
-        } else {
-            array_walk($render, function (&$item) { $item = $item->value; });
+            $result = array_pop($result);
         }
 
-        if ($root && null !== $this->getName()) {
-            $render = [$this->getName() => $render];
-        }
-
-        return $render;
+        return $result;
     }
 }
 
