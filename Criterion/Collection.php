@@ -29,13 +29,13 @@ class Collection extends AbstractCriterion
         parent::__construct($name, $criteria);
     }
 
-    public function build($root = true)
+    public function build()
     {
         $render = [];
 
         foreach ($this->criteria as $criterion) {
             if ($criterion instanceof static) {
-                $render[$criterion->getName()] = new Irreducible($criterion->build(false));
+                $render[$criterion->getName()] = new Irreducible($criterion->build());
                 continue;
             }
 
