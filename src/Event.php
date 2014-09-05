@@ -38,7 +38,7 @@ class Event
     /** @var string Description of this event */
     protected $description;
 
-    /** @var User owner of this event */
+    /** @var UserInterface owner of this event */
     protected $owner;
 
     /** @var Calendar Calendar associated to this event */
@@ -47,7 +47,7 @@ class Event
     /** @var Collection<EventParticipation> Participations registered to this event */
     protected $participations;
 
-    public function __construct(Calendar $calendar, User $owner, $name, Datetime $start, Datetime $end)
+    public function __construct(Calendar $calendar, UserInterface $owner, $name, Datetime $start, Datetime $end)
     {
         $this->name     = $name;
         $this->owner    = $owner;
@@ -94,7 +94,7 @@ class Event
         return $this;
     }
 
-    /** @return User */
+    /** @return UserInterface */
     public function getOwner()
     {
         return $this->owner;
