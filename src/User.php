@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\Collection,
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class User
+class User implements UserInterface
 {
     /** @var string User's name */
     protected $name;
@@ -41,25 +41,25 @@ class User
         $this->events = new ArrayCollection;
     }
 
-    /** @return string */
+    /** {@inheritDoc} */
     public function getName()
     {
         return $this->name;
     }
 
-    /** @return string */
+    /** {@inheritDoc} */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /** @return Collection<Event> */
+    /** {@inheritDoc} */
     public function getEvents()
     {
         return $this->events;
     }
 
-    /** @return $this */
+    /** {@inheritDoc} */
     public function addEvent(Event $event)
     {
         if ($this->events->contains($event)) {
@@ -71,7 +71,7 @@ class User
         return $this;
     }
 
-    /** @return $this */
+    /** {@inheritDoc} */
     public function removeEvent(Event $event)
     {
         $this->events->removeElement($event);

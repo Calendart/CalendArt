@@ -35,7 +35,7 @@ class EventParticipation
     /** @var Event */
     protected $event;
 
-    /** @var User */
+    /** @var UserInterface */
     protected $user;
 
     /** @var integer */
@@ -50,7 +50,7 @@ class EventParticipation
     /** @var integer */
     protected $status = self::STATUS_TENTATIVE;
 
-    public function __construct(Event $event, User $user, $role = self::ROLE_PARTICIPANT, $status = self::STATUS_TENTATIVE)
+    public function __construct(Event $event, UserInterface $user, $role = self::ROLE_PARTICIPANT, $status = self::STATUS_TENTATIVE)
     {
         $this->user  = $user;
         $this->event = $event;
@@ -95,7 +95,7 @@ class EventParticipation
         return $this->event;
     }
 
-    /** @return User */
+    /** @return UserInterface */
     public function getUser()
     {
         return $this->user;
