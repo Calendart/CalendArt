@@ -32,7 +32,7 @@ class EventParticipation
     const ROLE_PARTICIPANT = 0b01;
     const ROLE_MANAGER     = 0b10;
 
-    /** @var Event */
+    /** @var AbstractEvent */
     protected $event;
 
     /** @var User */
@@ -50,7 +50,7 @@ class EventParticipation
     /** @var integer */
     protected $status = self::STATUS_TENTATIVE;
 
-    public function __construct(Event $event, User $user, $role = self::ROLE_PARTICIPANT, $status = self::STATUS_TENTATIVE)
+    public function __construct(AbstractEvent $event, User $user, $role = self::ROLE_PARTICIPANT, $status = self::STATUS_TENTATIVE)
     {
         $this->user  = $user;
         $this->event = $event;
@@ -89,7 +89,7 @@ class EventParticipation
         return $this->invitedAt;
     }
 
-    /** @return Event */
+    /** @return AbstractEvent */
     public function getEvent()
     {
         return $this->event;

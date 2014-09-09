@@ -13,8 +13,7 @@ namespace CalendArt\Adapter;
 
 use Doctrine\Common\Collections\Collection;
 
-use CalendArt\Event,
-    CalendArt\Calendar;
+use CalendArt\AbstractEvent;
 
 /**
  * Handle the dialog with the adapter's api for its events
@@ -26,7 +25,7 @@ interface EventApiInterface
     /**
      * Get all the events available on the selected calendar
      *
-     * @return Collection<Event>
+     * @return Collection<AbstractEvent>
      */
     public function getList(AbstractCriterion $criterion = null);
 
@@ -35,7 +34,7 @@ interface EventApiInterface
      *
      * @param mixed $identifier Identifier of the event to fetch
      *
-     * @return Event
+     * @return AbstractEvent
      */
     public function get($identifier, AbstractCriterion $criterion = null);
 }

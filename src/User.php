@@ -30,7 +30,7 @@ class User
     /** @var string User's email */
     protected $email;
 
-    /** @var Collection<Event> Collection of events the user is involved in */
+    /** @var Collection<AbstractEvent> Collection of events the user is involved in */
     protected $events;
 
     public function __construct($name, $email)
@@ -53,14 +53,14 @@ class User
         return $this->email;
     }
 
-    /** @return Collection<Event> */
+    /** @return Collection<AbstractEvent> */
     public function getEvents()
     {
         return $this->events;
     }
 
     /** @return $this */
-    public function addEvent(Event $event)
+    public function addEvent(AbstractEvent $event)
     {
         if ($this->events->contains($event)) {
             return $this;
@@ -72,7 +72,7 @@ class User
     }
 
     /** @return $this */
-    public function removeEvent(Event $event)
+    public function removeEvent(AbstractEvent $event)
     {
         $this->events->removeElement($event);
 
