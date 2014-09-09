@@ -11,7 +11,7 @@
 
 namespace CalendArt\Adapter;
 
-use CalendArt\Calendar;
+use CalendArt\AbstractCalendar;
 
 /**
  * Handle the dialog with an Adapter
@@ -30,10 +30,10 @@ interface AdapterInterface
     /**
      * Get the Event API to use for this adapter (scoped to a particular calendar)
      *
-     * @param Calendar $calendar Calendar to scope this api to
+     * @param AbstractCalendar $calendar Calendar to scope this api to
      *
      * @return EventApiInterface
      */
-    public function getEventApi(Calendar $calendar);
+    public function getEventApi(AbstractCalendar $calendar);
 }
 

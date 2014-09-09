@@ -21,7 +21,7 @@ use Doctrine\Common\Collections\Collection,
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class Calendar
+abstract class AbstractCalendar
 {
     /** @var string Calendar's name */
     protected $name;
@@ -29,7 +29,7 @@ class Calendar
     /** @var string Calendar's description */
     protected $description = '';
 
-    /** @var Collection<Event> Collection of events */
+    /** @var Collection<AbstractEvent> Collection of events */
     protected $events;
 
     /** @var Collection<UserPermission> Collection of permissions accorded to this calendar */
@@ -42,6 +42,9 @@ class Calendar
         $this->events      = new ArrayCollection;
         $this->permissions = new ArrayCollection;
     }
+
+    /** @return mixed */
+    abstract public function getId();
 
     /** @return string */
     public function getName()
@@ -71,14 +74,14 @@ class Calendar
         return $this;
     }
 
-    /** @return Collection<Event> */
+    /** @return Collection<AbstractEvent> */
     public function getEvents()
     {
         return $this->events;
     }
 
     /** @return $this */
-    public function addEvent(Event $event)
+    public function addEvent(AbstractEvent $event)
     {
         if ($this->events->contains($event)) {
             return $this;
@@ -90,7 +93,7 @@ class Calendar
     }
 
     /** @return $this */
-    public function detachEvent(Event $event)
+    public function detachEvent(AbstractEvent $event)
     {
         $this->events->removeElement($event);
 

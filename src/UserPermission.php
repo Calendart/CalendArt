@@ -28,13 +28,13 @@ class UserPermission
     /** @var User */
     private $user;
 
-    /** @var Calendar */
+    /** @var AbstractCalendar */
     private $calendar;
 
     /** @var Integer Mask of permissions allocated for the User on the Calendar */
     private $mask = 0b0000;
 
-    public function __construct(Calendar $calendar, User $user, $mask = 0b0000)
+    public function __construct(AbstractCalendar $calendar, User $user, $mask = 0b0000)
     {
         $this->mask     = $mask;
         $this->user     = $user;
@@ -53,7 +53,7 @@ class UserPermission
         return $this->user;
     }
 
-    /** @return Calendar */
+    /** @return AbstractCalendar */
     public function getCalendar()
     {
         return $this->calendar;

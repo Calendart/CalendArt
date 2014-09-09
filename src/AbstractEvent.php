@@ -24,7 +24,7 @@ use Doctrine\Common\Collections\Collection,
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class Event
+abstract class AbstractEvent
 {
     /** @var Datetime Start date of this event */
     protected $start;
@@ -41,13 +41,13 @@ class Event
     /** @var User owner of this event */
     protected $owner;
 
-    /** @var Calendar Calendar associated to this event */
+    /** @var AbstractCalendar Calendar associated to this event */
     protected $calendar;
 
     /** @var Collection<EventParticipation> Participations registered to this event */
     protected $participations;
 
-    public function __construct(Calendar $calendar, User $owner, $name, Datetime $start, Datetime $end)
+    public function __construct(AbstractCalendar $calendar, User $owner, $name, Datetime $start, Datetime $end)
     {
         $this->name     = $name;
         $this->owner    = $owner;
@@ -65,6 +65,9 @@ class Event
         $owner->addEvent($this);
         $calendar->getEvents()->add($this);
     }
+
+    /** @return mixed */
+    abstract public function getId();
 
     /** @return string */
     public function getName()
@@ -168,7 +171,7 @@ class Event
         return $this->hasStarted($current) && !$this->hasEnded($current);
     }
 
-    /** @return Calendar */
+    /** @return AbstractCalendar */
     public function getCalendar()
     {
         return $this->calendar;

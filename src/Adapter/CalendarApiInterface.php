@@ -13,7 +13,7 @@ namespace CalendArt\Adapter;
 
 use Doctrine\Common\Collections\Collection;
 
-use CalendArt\Calendar;
+use CalendArt\AbstractCalendar;
 
 /**
  * Handle the dialog with the adapter's api for its calendars
@@ -25,7 +25,7 @@ interface CalendarApiInterface
     /**
      * Get all the calendars available with the current connexion
      *
-     * @return Collection<Calendar>
+     * @return Collection<AbstractCalendar>
      */
     public function getList(AbstractCriterion $criterion = null);
 
@@ -34,7 +34,7 @@ interface CalendarApiInterface
      *
      * @param mixed $identifier Identifier of the calendar to fetch
      *
-     * @return Calendar
+     * @return AbstractCalendar
      */
     public function get($identifier, AbstractCriterion $criterion = null);
 }

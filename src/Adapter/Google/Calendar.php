@@ -14,14 +14,14 @@ namespace CalendArt\Adapter\Google;
 use DateTimeZone,
     InvalidArgumentException;
 
-use CalendArt\Calendar as BaseCalendar;
+use CalendArt\AbstractCalendar;
 
 /**
  * Calendar model from a Google adapter point of view
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class Calendar extends BaseCalendar
+class Calendar extends AbstractCalendar
 {
     /** @var string Calendar's id */
     protected $id;
