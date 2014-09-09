@@ -15,7 +15,7 @@ use Datetime,
     DateTimeZone,
     InvalidArgumentException;
 
-use CalendArt\Event as BaseEvent,
+use CalendArt\AbstractEvent,
     CalendArt\EventParticipation as BaseEventParticipation;
 
 /**
@@ -23,7 +23,7 @@ use CalendArt\Event as BaseEvent,
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class Event extends BaseEvent
+class Event extends AbstractEvent
 {
     /** @var string Event's id */
     private $id;

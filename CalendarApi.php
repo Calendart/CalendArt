@@ -47,7 +47,10 @@ class CalendarApi implements CalendarApiInterface
     /** {@inheritDoc} */
     public function getList(AbstractCriterion $criterion = null)
     {
-        $query = new Collection([new Collection([new Field('items', $this->criteria)], 'fields')]);
+        $items = new Field('items', $this->criteria);
+        $items->addCriterion(new Field('accessRole'));
+
+        $query = new Collection([new Collection([$items, new Field('nextPageToken'), new Field('nextSyncToken')], 'fields')]);
 
         if (null !== $criterion) {
             $query = $query->merge($criterion);

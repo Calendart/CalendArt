@@ -13,7 +13,7 @@ namespace CalendArt\Adapter\Google;
 
 use GuzzleHttp\Client as Guzzle;
 
-use CalendArt\Calendar as BaseCalendar,
+use CalendArt\AbstractCalendar,
 
     CalendArt\Adapter\AdapterInterface,
     CalendArt\Adapter\EventApiInterface,
@@ -62,7 +62,7 @@ class GoogleAdapter implements AdapterInterface
     }
 
     /** {@inheritDoc} */
-    public function getEventApi(BaseCalendar $calendar)
+    public function getEventApi(AbstractCalendar $calendar)
     {
         if (!$calendar instanceof Calendar) {
             throw new InvalidArgumentException('Wrong calendar provided, expected a google calendar');
