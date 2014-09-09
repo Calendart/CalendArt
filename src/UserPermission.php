@@ -25,7 +25,7 @@ class UserPermission
     const EDIT   = 0b0100; // flag allowing to edit this calendar
     const DELETE = 0b1000; // flag allowing to delete this calendar
 
-    /** @var UserInterface */
+    /** @var User */
     private $user;
 
     /** @var Calendar */
@@ -34,7 +34,7 @@ class UserPermission
     /** @var Integer Mask of permissions allocated for the User on the Calendar */
     private $mask = 0b0000;
 
-    public function __construct(Calendar $calendar, UserInterface $user, $mask = 0b0000)
+    public function __construct(Calendar $calendar, User $user, $mask = 0b0000)
     {
         $this->mask     = $mask;
         $this->user     = $user;
@@ -47,7 +47,7 @@ class UserPermission
         return $this->mask;
     }
 
-    /** @return UserInterface */
+    /** @return User */
     public function getUser()
     {
         return $this->user;
