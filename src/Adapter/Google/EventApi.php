@@ -38,9 +38,13 @@ class EventApi implements EventApiInterface
     /** @var Field[] */
     private $fields;
 
-    public function __construct(Guzzle $client, Calendar $calendar)
+    /** @var GoogleAdapter */
+    private $adapter;
+
+    public function __construct(Guzzle $client, GoogleAdapter $adapter, Calendar $calendar)
     {
         $this->guzzle   = $client;
+        $this->adapter  = $adapter;
         $this->calendar = $calendar;
 
         $this->fields = [new Field('id'),

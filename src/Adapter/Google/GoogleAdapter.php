@@ -55,7 +55,7 @@ class GoogleAdapter implements AdapterInterface
     {
         if (null === $this->calendarApi)
         {
-            $this->calendarApi = new CalendarApi($this->guzzle);
+            $this->calendarApi = new CalendarApi($this->guzzle, $this);
         }
 
         return $this->calendarApi;
@@ -69,7 +69,7 @@ class GoogleAdapter implements AdapterInterface
         }
 
         if (!isset($this->eventApis[$calendar->getId()])) {
-            $this->eventApis[$calendar->getId()] = new EventApi($this->guzzle, $calendar);
+            $this->eventApis[$calendar->getId()] = new EventApi($this->guzzle, $this, $calendar);
         }
 
         return $this->eventApis[$calendar->getId()];
