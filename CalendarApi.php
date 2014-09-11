@@ -35,9 +35,13 @@ class CalendarApi implements CalendarApiInterface
     /** @var Guzzle Guzzle Http Client to use */
     private $guzzle;
 
-    public function __construct(Guzzle $client)
+    /** @var GoogleAdapter Google Adapter used */
+    private $adapter;
+
+    public function __construct(Guzzle $client, GoogleAdapter $adapter)
     {
-        $this->guzzle   = $client;
+        $this->guzzle  = $client;
+        $this->adapter = $adapter;
 
         $this->criteria = [new Field('id'),
                            new Field('summary'),
