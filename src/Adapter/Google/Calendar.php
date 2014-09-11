@@ -74,7 +74,7 @@ class Calendar extends AbstractCalendar
      * @throws InvalidArgumentException The data is not valid
      * @return static Calendar instance
      */
-    public static function hydrate(array $data)
+    public static function hydrate(array $data, User $user = null)
     {
         if (!isset($data['id'], $data['summary'], $data['timeZone'])) {
             throw new InvalidArgumentException(sprintf('Missing at least one of the mandatory properties "id", "summary" or "timeZone" ; got ["%s"]', implode('", "', array_keys($data))));
@@ -84,6 +84,10 @@ class Calendar extends AbstractCalendar
 
         if (isset($data['description'])) {
             $calendar->description = $data['description'];
+        }
+
+        if (null !== $user && isset($data['accessRole'])) {
+            $calendar->addPermission(UserPermission::hydrate($calendar, $user, $data['accessRole']));
         }
 
         return $calendar;
