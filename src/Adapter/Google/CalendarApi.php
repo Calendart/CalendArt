@@ -95,8 +95,36 @@ class CalendarApi implements CalendarApiInterface
         return Calendar::hydrate($response->json(), $this->adapter->getUser());
     }
 
+    /** {@inheritDoc} */
     public function getPermissions(AbstractCalendar $calendar, AbstractCriterion $criterion = null)
     {
+        $query = new Collection([new Collection([new Field('items', [new Field('id'), new Field('scope'), new Field('role')])], 'fields')]);
+
+        if (null !== $criterion) {
+            $query = $query->merge($criterion);
+        }
+
+        $response = $this->guzzle->get(sprintf('calendars/%s/acl', $calendar->getId()), ['query' => $query->build()]);
+
+        if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
+            throw new ApiErrorException($response);
+        }
+
+        $result = $response->json();
+        $list   = new ArrayCollection;
+
+        foreach ($result['items'] as $item) {
+            // only user scope are supported
+            if ('user' !== $item['scope']['type']) {
+                continue;
+            }
+
+            $list[$item['id']] = UserPermission::hydrate($calendar, User::hydrate(['email' => $item['scope']['value']]), $item['role']);
+        }
+
+        $calendar->setPermissions($list);
+
+        return $list;
     }
 }
 
