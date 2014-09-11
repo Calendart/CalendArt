@@ -20,10 +20,9 @@ namespace CalendArt;
  */
 class UserPermission
 {
-    const VIEW   = 0b0001; // flag allowing to view this calendar
-    const CREATE = 0b0010; // flag allowing the creation of an event
-    const EDIT   = 0b0100; // flag allowing to edit this calendar
-    const DELETE = 0b1000; // flag allowing to delete this calendar
+    const NOPE  = 0b00; // No rights. At all.
+    const READ  = 0b01; // flag allowing to view this calendar
+    const WRITE = 0b10; // flag allowing to edit this calendar
 
     /** @var User */
     private $user;
