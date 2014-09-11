@@ -13,18 +13,24 @@ namespace CalendArt\Adapter\Google;
 
 use GuzzleHttp\Client as Guzzle;
 
-use CalendArt\AbstractCalendar,
-
-    CalendArt\Adapter\AdapterInterface,
+use CalendArt\Adapter\AdapterInterface,
     CalendArt\Adapter\EventApiInterface,
     CalendArt\Adapter\CalendarApiInterface,
+
+    CalendArt\Adapter\Google\Criterion\Field,
+    CalendArt\Adapter\Google\Criterion\Collection,
+    CalendArt\Adapter\Google\Exception\ApiErrorException,
+
+    CalendArt\AbstractCalendar,
     CalendArt\Adapter\Google\Util\OAuth2Token;
+
 
 /**
  * Google Adapter - He knows how to dialog with google's calendars !
  *
  * This requires to have an OAuth2 token established with the following scopes :
- *  - https://www.googleapis.com/auth/calendar
+ * - email
+ * - https://www.googleapis.com/auth/calendar
  *
  * But, as this currently only support reading from the apis, you can may use
  * the following instead of the last one (the full calendar scope) :
@@ -42,6 +48,9 @@ class GoogleAdapter implements AdapterInterface
 
     /** @var EventApi[] */
     private $eventApis;
+
+    /** @var User Current user, associated with the given token */
+    private $user;
 
     public function __construct(OAuth2Token $token)
     {
@@ -73,6 +82,44 @@ class GoogleAdapter implements AdapterInterface
         }
 
         return $this->eventApis[$calendar->getId()];
+    }
+
+    /**
+     * Get the current user ; fetches its information if it was not fetched yet
+     *
+     * @return User
+     */
+    public function getUser()
+    {
+        if (null == $this->user) {
+            $fields = [new Field('id'),
+                       new Field('name'),
+                       new Field('emails')];
+
+            $criterion = new Collection([new Collection($fields, 'fields')]);
+            $response = $this->guzzle->get('../../plus/v1/people/me', ['query' => $criterion->build()]);
+
+            if (200 > $response->getStatusCode() || 300 <= $response->getStatusCode()) {
+                throw new ApiErrorException($response);
+            }
+
+            $emails = [];
+            $result = $response->json();
+
+            foreach ($result['emails'] as $email) {
+                 if ('account' !== $email['type']) {
+                     continue;
+                 }
+
+                 $emails[] = $email['value'];
+            }
+
+            $name = sprintf('%s %s', $result['name']['givenName'], $result['name']['familyName']);
+
+            $this->user = new User($name, $emails, $result['id']);
+        }
+
+        return $this->user;
     }
 }
 
