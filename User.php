@@ -27,7 +27,7 @@ class User extends BaseUser
 
     public function __construct($name, $email, $id = null)
     {
-        parent::__construct($name, $email);
+        parent::__construct($name, (array) $email);
 
         $this->id = $id;
     }

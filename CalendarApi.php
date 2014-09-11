@@ -119,7 +119,9 @@ class CalendarApi implements CalendarApiInterface
                 continue;
             }
 
-            $list[$item['id']] = UserPermission::hydrate($calendar, User::hydrate(['email' => $item['scope']['value']]), $item['role']);
+            $user = in_array($item['scope']['value'], $this->adapter->getUser()->getEmail(true)) ? $this->adapter->getUser() : User::hydrate(['email' => $item['scope']['value']]);
+
+            $list[$item['id']] = UserPermission::hydrate($calendar, $user, $item['role']);
         }
 
         $calendar->setPermissions($list);
