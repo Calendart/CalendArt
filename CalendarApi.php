@@ -71,7 +71,7 @@ class CalendarApi implements CalendarApiInterface
         $list   = new ArrayCollection;
 
         foreach ($result['items'] as $item) {
-            $list[$item['id']] = Calendar::hydrate($item);
+            $list[$item['id']] = Calendar::hydrate($item, $this->adapter->getUser());
         }
 
         return $list;
@@ -92,7 +92,7 @@ class CalendarApi implements CalendarApiInterface
             throw new ApiErrorException($response);
         }
 
-        return Calendar::hydrate($response->json());
+        return Calendar::hydrate($response->json(), $this->adapter->getUser());
     }
 
     public function getPermissions(AbstractCalendar $calendar, AbstractCriterion $criterion = null)
