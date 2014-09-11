@@ -22,6 +22,7 @@ use CalendArt\Adapter\Google\Calendar,
     CalendArt\Adapter\Google\Criterion\Field,
     CalendArt\Adapter\Google\Criterion\Collection,
 
+    Calendar\AbstractCalendar,
     CalendArt\Adapter\CalendarApiInterface;
 
 /**
@@ -88,6 +89,10 @@ class CalendarApi implements CalendarApiInterface
         }
 
         return Calendar::hydrate($response->json());
+    }
+
+    public function getPermissions(AbstractCalendar $calendar, AbstractCriterion $criterion = null)
+    {
     }
 }
 
