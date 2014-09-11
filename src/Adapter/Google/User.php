@@ -25,9 +25,34 @@ class User extends BaseUser
     /** @var string user's identifier */
     private $id;
 
+    public function __construct($name, $email, $id = null)
+    {
+        parent::__construct($name, $email);
+
+        $this->id = $id;
+    }
+
     public function getId()
     {
         return $this->id ?: sha1($this->getEmail() . $this->getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * This adds also the handling of multiple emails, as a google account may
+     * have more than one email
+     *
+     * @param boolean $all Fetch _all_ the emails ?
+     * @return array|string
+     */
+    public function getEmail($all = false)
+    {
+        if (!$all && is_array($this->email)) {
+            return $this->email[0];
+        }
+
+        return parent::getEmail();
     }
 
     public static function hydrate(array $data)
