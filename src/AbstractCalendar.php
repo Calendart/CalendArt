@@ -125,5 +125,13 @@ abstract class AbstractCalendar
 
         return $this;
     }
+
+    /** @return $this */
+    public function setPermissions(Collection $collection)
+    {
+        $this->permissions = $collection;
+
+        return $this;
+    }
 }
 
