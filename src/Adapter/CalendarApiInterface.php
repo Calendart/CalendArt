@@ -37,5 +37,12 @@ interface CalendarApiInterface
      * @return AbstractCalendar
      */
     public function get($identifier, AbstractCriterion $criterion = null);
+
+    /**
+     * Returns the permissions for a calendar (and replace all old permissions)
+     *
+     * @return Collection<UserPermission>
+     */
+    public function getPermissions(AbstractCalendar $calendar, AbstractCriterion $criterion = null);
 }
 
