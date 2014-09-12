@@ -67,8 +67,8 @@ class UserPermission
      */
     public function grant($flag)
     {
-        if (is_string($flag) && defined('static::' . $flag)) {
-            $flag = constant('static::' . $flag);
+        if (is_string($flag) && defined('static::' . strtoupper($flag))) {
+            $flag = constant('static::' . strtoupper($flag));
         }
 
         $this->mask |= $flag;
@@ -85,8 +85,8 @@ class UserPermission
      */
     public function revoke($flag)
     {
-        if (is_string($flag) && defined('static::' . $flag)) {
-            $flag = constant('static::' . $flag);
+        if (is_string($flag) && defined('static::' . strtoupper($flag))) {
+            $flag = constant('static::' . strtoupper($flag));
         }
 
         $this->mask &= ~$flag;
@@ -102,8 +102,8 @@ class UserPermission
      */
     public function isGranted($flag)
     {
-        if (is_string($flag) && defined('static::' . $flag)) {
-            $flag = constant('static::' . $flag);
+        if (is_string($flag) && defined('static::' . strtoupper($flag))) {
+            $flag = constant('static::' . strtoupper($flag));
         }
 
         return $this->mask & $flag;
