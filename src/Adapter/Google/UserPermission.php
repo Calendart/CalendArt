@@ -22,6 +22,8 @@ use CalendArt\UserPermission as Base;
  */
 class UserPermission extends Base
 {
+    const OWNER = 0b100;
+
     public static function hydrate(Calendar $calendar, User $user, $role)
     {
         return new static($calendar, $user, self::translateRole($role));
@@ -33,6 +35,8 @@ class UserPermission extends Base
 
         switch ($role) {
             case 'owner':
+                $flags |= self::OWNER;
+
             case 'writer':
                 $flags |= parent::WRITE;
 
