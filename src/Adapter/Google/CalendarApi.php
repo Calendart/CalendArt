@@ -22,7 +22,7 @@ use CalendArt\Adapter\Google\Calendar,
     CalendArt\Adapter\Google\Criterion\Field,
     CalendArt\Adapter\Google\Criterion\Collection,
 
-    Calendar\AbstractCalendar,
+    CalendArt\AbstractCalendar,
     CalendArt\Adapter\CalendarApiInterface;
 
 /**
