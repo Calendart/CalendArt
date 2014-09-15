@@ -9,7 +9,7 @@
  * @license   http://www.opensource.org/licenses/MIT-License MIT License
  */
 
-namespace CalendArt\Google;
+namespace CalendArt\Adapter\Google;
 
 use InvalidArgumentException;
 
