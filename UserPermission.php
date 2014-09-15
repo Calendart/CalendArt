@@ -50,7 +50,7 @@ class UserPermission extends Base
                 throw new InvalidArgumentException(sprintf('Role "%s" not recognized', $role));
         }
 
-        return $flag;
+        return $flags;
     }
 }
 
