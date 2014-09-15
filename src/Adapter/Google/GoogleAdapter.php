@@ -121,5 +121,17 @@ class GoogleAdapter implements AdapterInterface
 
         return $this->user;
     }
+
+    /**
+     * Sets a Google User
+     *
+     * @return $this
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 }
 
