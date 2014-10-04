@@ -49,7 +49,7 @@ class User extends BaseUser
     public function getEmail($all = false)
     {
         if (!$all && is_array($this->email)) {
-            return $this->email[0];
+            return reset($this->email) ?: null;
         }
 
         return parent::getEmail();
