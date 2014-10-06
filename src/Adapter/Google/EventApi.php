@@ -60,6 +60,7 @@ class EventApi implements EventApiInterface
                                                new Field('displayName')]),
 
                          new Field('attendees', [new Field('email'),
+                                                 new Field('resource'),
                                                  new Field('organizer'),
                                                  new Field('displayName'),
                                                  new Field('responseStatus')])];
