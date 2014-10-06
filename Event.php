@@ -133,6 +133,11 @@ class Event extends AbstractEvent
             }
 
             foreach ($data['attendees'] as $attendee) {
+                // if it is a resource, we don't really care about this "attendee"
+                if (isset($attendee['resource']) && true === $attendee['resource']) {
+                    continue;
+                }
+
                 if (!isset($userList[$id = self::buildAttendeeId($attendee)])) {
                     $userList[$id] = User::hydrate($attendee);
                 }
