@@ -28,27 +28,27 @@ use CalendArt\AbstractEvent,
  */
 class Event extends AbstractEvent
 {
+    const STATUS_CANCELLED = 'cancelled';
+    const STATUS_TENTATIVE = 'tentative';
+    const STATUS_CONFIRMED = 'confirmed';
+
     /** @var string Event's id */
-    private $id;
+    protected $id;
 
-    /** @var Datetime when was this event created */
-    private $createdAt;
-
-    /** @var Datetime last updated date */
-    private $updatedAt;
-
-    /** @var string where this event is located at */
-    public $location;
+    /** @var string **/
+    protected $status;
 
     /** @var User[] All the fetched and hydrated users, with an id as a key **/
     protected static $users = [];
 
-    public function __construct(Calendar $calendar, User $owner, Datetime $createdAt, Datetime $start, Datetime $end, $id, $name)
+    public function __construct(Calendar $calendar, $status = self::STATUS_TENTATIVE)
     {
-        parent::__construct($calendar, $owner, $name, $start, $end);
+        $this->status   = $status;
+        $this->calendar = $calendar;
 
-        $this->id        = $id;
-        $this->createdAt = $createdAt;
+        $this->participations = new ArrayCollection;
+
+        $calendar->getEvents()->add($this);
     }
 
     public function getId()
@@ -56,30 +56,18 @@ class Event extends AbstractEvent
         return $this->id;
     }
 
-    /** @return Datetime */
-    public function getUpdatedAt()
+    public function getStatus()
     {
-        return $this->updatedAt;
+        return $this->status;
     }
 
-    /** @return $this */
-    public function setUpdatedAt(Datetime $updatedAt)
+    public function setStatus($status)
     {
-        $this->updatedAt = $updatedAt;
+        if (!in_array($status, [self::STATUS_CANCELLED, self::STATUS_TENTATIVE, self::STATUS_CONFIRMED])) {
+            throw new InvalidArgumentException('Status not recognized');
+        }
 
-        return $this;
-    }
-
-    /** @return boolean */
-    public function wasUpdated()
-    {
-        return null !== $this->updatedAt;
-    }
-
-    /** @return Datetime */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
+        $this->status = $status;
     }
 
     /** @return $this */
@@ -102,60 +90,12 @@ class Event extends AbstractEvent
      */
     public static function hydrate(Calendar $calendar, array $data)
     {
-        if (!isset($data['id'], $data['summary'], $data['creator'], $data['created'], $data['start'], $data['end'])) {
-            throw new InvalidArgumentException(sprintf('Missing at least one of the mandatory properties "id", "summary", "creator", "created", "start" or "end" ; got ["%s"]', implode('", "', array_keys($data))));
+        if (!isset($data['id'], $data['status'])) {
+            throw new InvalidArgumentException(sprintf('Missing at least one of the mandatory properties "id", "status" ; got ["%s"]', implode('", "', array_keys($data))));
         }
 
-        if (!is_array($data['end']) || !is_array($data['start'])) {
-            throw new InvalidArgumentException('The start and the end dates should be an array');
-        }
-
-        $owner = self::buildUser($data['creator']);
-        $end      = self::buildDate($data['end']);
-        $start    = self::buildDate($data['start']);
-        $created  = new Datetime($data['created']);
-        $userList = [$owner->getId() => $owner];
-
-        $event = new static($calendar, $owner, $created, $start, $end, $data['id'], $data['summary']);
-
-        if (isset($data['updated'])) {
-            $event->setUpdatedAt(new Datetime($data['updated']));
-        }
-
-        if (isset($data['location'])) {
-            $event->location = $data['location'];
-        }
-
-        if (isset($data['description'])) {
-            $event->description = $data['description'];
-        }
-
-        if (isset($data['attendees'])) {
-            $event->participations = static::buildParticipations($data['attendees']);
-        }
-
-            foreach ($data['attendees'] as $attendee) {
-                // if it is a resource, we don't really care about this "attendee"
-                if (isset($attendee['resource']) && true === $attendee['resource']) {
-                    continue;
-                }
-
-                if (!isset($userList[$id = self::buildAttendeeId($attendee)])) {
-                    $userList[$id] = User::hydrate($attendee);
-                }
-
-                $role = EventParticipation::ROLE_PARTICIPANT;
-
-                if (isset($attendee['organizer']) && true === $attendee['organizer']) {
-                    $role |= EventParticipation::ROLE_MANAGER;
-                }
-
-                $participation = new EventParticipation($event, $userList[$id], $role, EventParticipation::translateStatus($attendee['responseStatus']));
-
-                $userList[$id]->addEvent($event);
-                $event->addParticipation($participation);
-            }
-        }
+        $event = new static($calendar, $data['status']);
+        $event->id = $data['status'];
 
         return $event;
     }
@@ -175,7 +115,7 @@ class Event extends AbstractEvent
         return $date;
     }
 
-    private static function buildParticipations(array $data)
+    protected static function buildParticipations(array $data)
     {
         $participations = new ArrayCollection;
 
@@ -201,7 +141,7 @@ class Event extends AbstractEvent
         return $participations;
     }
 
-    private static function buildUser(array $data)
+    protected static function buildUser(array $data)
     {
         if (isset($data['id'])) {
             $id = $data['id'];
