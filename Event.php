@@ -11,6 +11,9 @@
 
 namespace CalendArt\Adapter\Google;
 
+use Doctrine\Common\Collections\Collection,
+    Doctrine\Common\Collections\ArrayCollection;
+
 use Datetime,
     DateTimeZone,
     InvalidArgumentException;
@@ -36,6 +39,9 @@ class Event extends AbstractEvent
 
     /** @var string where this event is located at */
     public $location;
+
+    /** @var User[] All the fetched and hydrated users, with an id as a key **/
+    protected static $users = [];
 
     public function __construct(Calendar $calendar, User $owner, Datetime $createdAt, Datetime $start, Datetime $end, $id, $name)
     {
@@ -104,7 +110,7 @@ class Event extends AbstractEvent
             throw new InvalidArgumentException('The start and the end dates should be an array');
         }
 
-        $owner = User::hydrate($data['creator']);
+        $owner = self::buildUser($data['creator']);
         $end      = self::buildDate($data['end']);
         $start    = self::buildDate($data['start']);
         $created  = new Datetime($data['created']);
@@ -124,12 +130,9 @@ class Event extends AbstractEvent
             $event->description = $data['description'];
         }
 
-        $owner->addEvent($event);
-
         if (isset($data['attendees'])) {
-            if (!is_array($data['attendees'])) {
-                throw new InvalidArgumentException('The attendees data should be an array, %s given', is_object($data['attendees']) ? get_class($data['attendees']) : gettype($data['attendees']));
-            }
+            $event->participations = static::buildParticipations($data['attendees']);
+        }
 
             foreach ($data['attendees'] as $attendee) {
                 // if it is a resource, we don't really care about this "attendee"
@@ -172,23 +175,55 @@ class Event extends AbstractEvent
         return $date;
     }
 
-    private static function buildAttendeeId(array $attendee)
+    private static function buildParticipations(array $data)
     {
-        if (isset($attendee['id'])) {
-            return $attendee['id'];
+        $participations = new ArrayCollection;
+
+        foreach ($data as $attendee) {
+            // if it is a resource, we don't really care about this "attendee"
+            if (isset($attendee['resource']) && true === $attendee['resource']) {
+                continue;
+            }
+
+            $user = static::buildUser($attendee);
+            $role = EventParticipation::ROLE_PARTICIPANT;
+
+            if (isset($attendee['organizer']) && true === $attendee['organizer']) {
+                $role |= EventParticipation::ROLE_MANAGER;
+            }
+
+            $participation = new EventParticipation($event, $user, $role, EventParticipation::translateStatus($attendee['responseStatus']));
+
+            static::$userList[$id]->addEvent($event);
+            $participations->addParticipation($participation);
         }
 
-        $parts = [];
+        return $participations;
+    }
 
-        if (isset($attendee['email'])) {
-            $parts[] = $attendee['email'];
+    private static function buildUser(array $data)
+    {
+        if (isset($data['id'])) {
+            $id = $data['id'];
+        } else {
+            $parts = [];
+
+            if (isset($data['email'])) {
+                $parts[] = $data['email'];
+            }
+
+            if (isset($data['displayName'])) {
+                $parts[] = $data['displayName'];
+            }
+
+            $id = sha1(implode('', $parts));
         }
 
-        if (isset($attendee['displayName'])) {
-            $parts[] = $attendee['displayName'];
+        if (!isset(static::$userList[$id])) {
+            static::$userList[$id] = User::hydrate($data);
         }
 
-        return sha1(implode('', $parts));
+        return static::$userList[$id];
     }
 }
 
