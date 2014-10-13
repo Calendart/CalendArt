@@ -105,9 +105,8 @@ class Event extends AbstractEvent
         }
 
         $owner = User::hydrate($data['creator']);
-
-        $end      = new Datetime(self::normalizeDates($data['end']));
-        $start    = new Datetime(self::normalizeDates($data['start']));
+        $end      = self::buildDate($data['end']);
+        $start    = self::buildDate($data['start']);
         $created  = new Datetime($data['created']);
         $userList = [$owner->getId() => $owner];
 
@@ -158,17 +157,19 @@ class Event extends AbstractEvent
         return $event;
     }
 
-    private static function normalizeDates(array $date)
+    protected static function buildDate(array $data)
     {
-        if (!isset($date['date']) && !isset($date['dateTime'])) {
-            throw new InvalidArgumentException(sprintf('This date seems to be malformed. Expected a `date` or `dateTime` key ; had [`%s`]', implode('`, `', array_keys($date))));
+        if (!isset($data['date']) && !isset($data['dateTime'])) {
+            throw new InvalidArgumentException(sprintf('This date seems to be malformed. Expected a `date` or `dateTime` key ; had [`%s`]', implode('`, `', array_keys($data))));
         }
 
-        if (isset($date['date'])) {
-            return $date['date'];
+        $date = new Datetime(isset($data['date']) ? $data['date'] : $data['dateTime']);
+
+        if (isset($data['timeZone'])) {
+            $date->setTimezone(new DateTimezone($data['timeZone']));
         }
 
-        return $date['dateTime'];
+        return $date;
     }
 
     private static function buildAttendeeId(array $attendee)
