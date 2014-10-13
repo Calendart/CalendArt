@@ -18,7 +18,7 @@ use Datetime,
     DateTimeZone,
     InvalidArgumentException;
 
-use CalendArt\AbstractEvent,
+use CalendArt\AbstractEvent as BaseAbstractEvent,
     CalendArt\EventParticipation as BaseEventParticipation;
 
 /**
@@ -26,7 +26,7 @@ use CalendArt\AbstractEvent,
  *
  * @author Baptiste Clavié <baptiste@wisembly.com>
  */
-class Event extends AbstractEvent
+abstract class AbstractEvent extends BaseAbstractEvent
 {
     const STATUS_CANCELLED = 'cancelled';
     const STATUS_TENTATIVE = 'tentative';
