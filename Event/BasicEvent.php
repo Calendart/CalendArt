@@ -13,7 +13,12 @@ namespace CalendArt\Adapter\Google\Event;
 
 use Datetime;
 
-use CalendArt\Adapter\Google\AbstractEvent;
+use Doctrine\Common\Collections\Collection,
+    Doctrine\Common\Collections\ArrayCollection;
+
+use CalendArt\Adapter\Google\User,
+    CalendArt\Adapter\Google\AbstractEvent,
+    CalendArt\Adapter\Google\EventParticipation;
 
 /**
  * Base event class for google events
@@ -95,6 +100,93 @@ class BasicEvent extends AbstractEvent
         $this->overlap = (bool) $overlap;
 
         return $this;
+    }
+
+    /**
+     * Build the participant collection from a set of User
+     *
+     * @param array Participant data
+     *
+     * @return Collection<EventParticipation>
+     */
+    protected static function buildParticipations(array $data)
+    {
+        $participations = new ArrayCollection;
+
+        foreach ($data as $attendee) {
+            // if it is a resource, we don't really care about this "attendee"
+            if (isset($attendee['resource']) && true === $attendee['resource']) {
+                continue;
+            }
+
+            $user = static::buildUser($attendee);
+            $role = EventParticipation::ROLE_PARTICIPANT;
+
+            if (isset($attendee['organizer']) && true === $attendee['organizer']) {
+                $role |= EventParticipation::ROLE_MANAGER;
+            }
+
+            $participation = new EventParticipation($event, $user, $role, EventParticipation::translateStatus($attendee['responseStatus']));
+
+            static::$userList[$id]->addEvent($event);
+            $participations->addParticipation($participation);
+        }
+
+        return $participations;
+    }
+
+    /**
+     * Build a User object based on given data
+     *
+     * @param array $data User data
+     *
+     * @return User
+     */
+    protected static function buildUser(array $data)
+    {
+        if (isset($data['id'])) {
+            $id = $data['id'];
+        } else {
+            $parts = [];
+
+            if (isset($data['email'])) {
+                $parts[] = $data['email'];
+            }
+
+            if (isset($data['displayName'])) {
+                $parts[] = $data['displayName'];
+            }
+
+            $id = sha1(implode('', $parts));
+        }
+
+        if (!isset(static::$userList[$id])) {
+            static::$userList[$id] = User::hydrate($data);
+        }
+
+        return static::$userList[$id];
+    }
+
+    /**
+     * Build a Date object based on given data
+     *
+     * @param array $data Date data
+     *
+     * @return Datetime
+     */
+    protected static function buildDate(array $data)
+    {
+        if (!isset($data['date']) && !isset($data['dateTime'])) {
+            throw new InvalidArgumentException(sprintf('This date seems to be malformed. Expected a `date` or `dateTime` key ; had [`%s`]', implode('`, `', array_keys($data))));
+        }
+
+        $date = new Datetime(isset($data['date']) ? $data['date'] : $data['dateTime']);
+
+        if (isset($data['timeZone'])) {
+            $date->setTimezone(new DateTimezone($data['timeZone']));
+        }
+
+        return $date;
     }
 }
 
