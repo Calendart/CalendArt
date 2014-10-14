@@ -11,12 +11,14 @@
 
 namespace CalendArt\Adapter\Google\Event;
 
-use Datetime;
+use Datetime,
+    InvalidArgumentException;
 
 use Doctrine\Common\Collections\Collection,
     Doctrine\Common\Collections\ArrayCollection;
 
 use CalendArt\Adapter\Google\User,
+    CalendArt\Adapter\Google\Calendar,
     CalendArt\Adapter\Google\AbstractEvent,
     CalendArt\Adapter\Google\EventParticipation;
 
@@ -102,6 +104,67 @@ class BasicEvent extends AbstractEvent
         $this->stackable = (bool) $stackable;
 
         return $this;
+    }
+
+    /**
+     * Hydrate a new object from an array of data extracted from a returned json
+     *
+     * @param array $data JSON interpreted data returned by the event's api
+     *
+     * @throws InvalidArgumentException The data is not valid
+     * @return static Event instance
+     */
+    public static function hydrate(Calendar $calendar, array $data)
+    {
+        if (!isset($data['summary'], $data['creator'], $data['created'], $data['start'])) {
+            throw new InvalidArgumentException(sprintf('Missing at least one of the following mandatory properties "summary", "creator", "created" or "start" ; got ["%s"]', implode('", "', array_keys($data))));
+        }
+
+        $end = null;
+
+        if (!isset($data['endTimeUnspecified']) || false === $data['endTimeUnspecified']) {
+            if (!isset($data['end'])) {
+                throw new InvalidArgumentException(sprintf('Missing at least the following mandatory property "end" ; got ["%s"]', implode('", "', array_keys($data))));
+            }
+
+            if (!is_array($data['end']))  {
+                throw new InvalidArgumentException('The start and the end dates should be an array');
+            }
+
+            $end = static::buildDate($data['end']);
+        }
+
+        if (!is_array($data['start']))  {
+            throw new InvalidArgumentException('The start and the end dates should be an array');
+        }
+
+        $event = parent::hydrate($calendar, $data);
+
+        $event->end       = $end;
+        $event->name      = $data['summary'];
+        $event->createdAt = new Datetime($data['created']);
+        $event->updatedAt = new Datetime($data['updated']);
+        $event->start     = static::buildDate($data['start']);
+
+        if (isset($data['location'])) {
+            $event->location = $data['location'];
+        }
+
+        if (isset($data['description'])) {
+            $event->description = $data['description'];
+        }
+
+        if (isset($data['attendees'])) {
+            $event->participations = static::buildParticipations($data['attendees']);
+        }
+
+        if (isset($data['transparent'])) {
+            $event->stackable = true === $data['transparent'];
+        }
+
+        static::buildUser($data['creator'])->addEvent($event);
+
+        return $event;
     }
 
     /**
