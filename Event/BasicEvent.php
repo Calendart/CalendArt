@@ -40,9 +40,6 @@ class BasicEvent extends AbstractEvent
     /** @var Datetime */
     private $updatedAt;
 
-    /** @var string Event's etag */
-    private $etag;
-
     /** @var string Where the event is supposed to happen */
     public $location;
 
@@ -90,6 +87,11 @@ class BasicEvent extends AbstractEvent
         return [static::VISIBILITY_DEFAULT, static::VISIBILITY_PUBLIC, static::VISIBILITY_PRIVATE, static::VISIBILITY_CONFIDENTIAL];
     }
 
+    /**
+     * Determine if this event can be overlapped with other events
+     *
+     * @return Boolean
+     */
     public function hasOverlap()
     {
         return true === $this->overlap;

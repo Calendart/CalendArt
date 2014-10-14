@@ -38,6 +38,9 @@ abstract class AbstractEvent extends BaseAbstractEvent
     /** @var string **/
     protected $status;
 
+    /** @var string Event's etag */
+    private $etag;
+
     /** @var User[] All the fetched and hydrated users, with an id as a key **/
     protected static $users = [];
 
@@ -70,6 +73,11 @@ abstract class AbstractEvent extends BaseAbstractEvent
         $this->status = $status;
     }
 
+    public function getEtag()
+    {
+        return $this->etag;
+    }
+
     /** @return $this */
     public function addParticipation(BaseEventParticipation $participation)
     {
@@ -90,12 +98,14 @@ abstract class AbstractEvent extends BaseAbstractEvent
      */
     public static function hydrate(Calendar $calendar, array $data)
     {
-        if (!isset($data['id'], $data['status'])) {
-            throw new InvalidArgumentException(sprintf('Missing at least one of the mandatory properties "id", "status" ; got ["%s"]', implode('", "', array_keys($data))));
+        if (!isset($data['id'], $data['status'], $data['etag'])) {
+            throw new InvalidArgumentException(sprintf('Missing at least one of the mandatory properties "id", "etag", "status" ; got ["%s"]', implode('", "', array_keys($data))));
         }
 
         $event = new static($calendar, $data['status']);
-        $event->id = $data['status'];
+
+        $event->id   = $data['status'];
+        $event->etag = $data['etag'];
 
         return $event;
     }
