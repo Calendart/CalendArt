@@ -231,27 +231,5 @@ class BasicEvent extends AbstractEvent
 
         return static::$userList[$id];
     }
-
-    /**
-     * Build a Date object based on given data
-     *
-     * @param array $data Date data
-     *
-     * @return Datetime
-     */
-    protected static function buildDate(array $data)
-    {
-        if (!isset($data['date']) && !isset($data['dateTime'])) {
-            throw new InvalidArgumentException(sprintf('This date seems to be malformed. Expected a `date` or `dateTime` key ; had [`%s`]', implode('`, `', array_keys($data))));
-        }
-
-        $date = new Datetime(isset($data['date']) ? $data['date'] : $data['dateTime']);
-
-        if (isset($data['timeZone'])) {
-            $date->setTimezone(new DateTimezone($data['timeZone']));
-        }
-
-        return $date;
-    }
 }
 
