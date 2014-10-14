@@ -43,11 +43,11 @@ class BasicEvent extends AbstractEvent
     /** @var string Where the event is supposed to happen */
     public $location;
 
+    /** @var boolean Can this event be stacked with other events on the same time frame ? */
+    private $stackable = false;
+
     /** @var string Event's visibility */
     private $visibility = self::VISIBILITY_DEFAULT;
-
-    /** @var boolean Can this event overlap other events on the same time frame ? */
-    public $overlap = false;
 
     /** @return Datetime */
     public function getCreatedAt()
@@ -88,18 +88,18 @@ class BasicEvent extends AbstractEvent
     }
 
     /**
-     * Determine if this event can be overlapped with other events
+     * Determine if this event can be stacked with other events
      *
      * @return Boolean
      */
-    public function hasOverlap()
+    public function isStackable()
     {
-        return true === $this->overlap;
+        return true === $this->stackable;
     }
 
-    public function setOverlap($overlap)
+    public function setStackable($stackable)
     {
-        $this->overlap = (bool) $overlap;
+        $this->stackable = (bool) $stackable;
 
         return $this;
     }
