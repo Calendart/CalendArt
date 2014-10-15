@@ -116,8 +116,8 @@ class BasicEvent extends AbstractEvent
      */
     public static function hydrate(Calendar $calendar, array $data)
     {
-        if (!isset($data['summary'], $data['creator'], $data['created'], $data['start'])) {
-            throw new InvalidArgumentException(sprintf('Missing at least one of the following mandatory properties "summary", "creator", "created" or "start" ; got ["%s"]', implode('", "', array_keys($data))));
+        if (!isset($data['creator'], $data['created'], $data['start'])) {
+            throw new InvalidArgumentException(sprintf('Missing at least one of the following mandatory properties : "creator", "created" or "start" ; got ["%s"]', implode('", "', array_keys($data))));
         }
 
         $end = null;
@@ -141,10 +141,13 @@ class BasicEvent extends AbstractEvent
         $event = parent::hydrate($calendar, $data);
 
         $event->end       = $end;
-        $event->name      = $data['summary'];
         $event->createdAt = new Datetime($data['created']);
         $event->updatedAt = new Datetime($data['updated']);
         $event->start     = static::buildDate($data['start']);
+
+        if (isset($data['summary'])) {
+            $event->name = $data['summary'];
+        }
 
         if (isset($data['location'])) {
             $event->location = $data['location'];
