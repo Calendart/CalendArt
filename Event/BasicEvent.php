@@ -165,7 +165,8 @@ class BasicEvent extends AbstractEvent
             $event->stackable = true === $data['transparent'];
         }
 
-        static::buildUser($data['creator'])->addEvent($event);
+        $owner = static::buildUser($data['creator'])->addEvent($event);
+        $event->owner = $owner;
 
         return $event;
     }
