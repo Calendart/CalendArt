@@ -52,6 +52,7 @@ class EventApi implements EventApiInterface
 
         $this->fields = [new Field('id'),
                          new Field('end'),
+                         new Field('etag'),
                          new Field('start'),
                          new Field('status'),
                          new Field('created'),
