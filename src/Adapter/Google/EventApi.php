@@ -152,7 +152,7 @@ class EventApi implements EventApiInterface
             throw new ApiErrorException($response);
         }
 
-        return Event::hydrate($this->calendar, $response->json());
+        return BasicEvent::hydrate($this->calendar, $response->json());
     }
 }
 

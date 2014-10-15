@@ -155,7 +155,7 @@ class BasicEvent extends AbstractEvent
         }
 
         if (isset($data['attendees'])) {
-            $event->participations = static::buildParticipations($data['attendees']);
+            $event->participations = static::buildParticipations($event, $data['attendees']);
         }
 
         if (isset($data['transparent'])) {
@@ -174,7 +174,7 @@ class BasicEvent extends AbstractEvent
      *
      * @return Collection<EventParticipation>
      */
-    protected static function buildParticipations(array $data)
+    protected static function buildParticipations(self $event, array $data)
     {
         $participations = new ArrayCollection;
 
@@ -193,8 +193,8 @@ class BasicEvent extends AbstractEvent
 
             $participation = new EventParticipation($event, $user, $role, EventParticipation::translateStatus($attendee['responseStatus']));
 
-            static::$userList[$id]->addEvent($event);
-            $participations->addParticipation($participation);
+            $user->addEvent($event);
+            $participations->add($participation);
         }
 
         return $participations;
@@ -225,11 +225,11 @@ class BasicEvent extends AbstractEvent
             $id = sha1(implode('', $parts));
         }
 
-        if (!isset(static::$userList[$id])) {
-            static::$userList[$id] = User::hydrate($data);
+        if (!isset(static::$users[$id])) {
+            static::$users[$id] = User::hydrate($data);
         }
 
-        return static::$userList[$id];
+        return static::$users[$id];
     }
 }
 
