@@ -81,7 +81,7 @@ abstract class AbstractCriterion implements IteratorAggregate
      * @return static The found criterion
      * @throws CriterionNotFoundException if the criterion is not found
      */
-    protected function getCriterion($name)
+    public function getCriterion($name)
     {
         if ($name instanceof self) {
             $name = $name->getName();
