@@ -131,6 +131,12 @@ class EventApi implements EventApiInterface
     }
 
     /** {@inheritDoc} */
+    public function getCalendar()
+    {
+        return $this->calendar;
+    }
+
+    /** {@inheritDoc} */
     public function get($identifier, AbstractCriterion $criterion = null)
     {
         $query = new Collection($this->fields, 'fields');
