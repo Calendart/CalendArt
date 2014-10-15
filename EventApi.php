@@ -16,9 +16,12 @@ use GuzzleHttp\Client as Guzzle;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use CalendArt\Adapter\EventApiInterface,
+    CalendArt\Adapter\AbstractCriterion,
+    CalendArt\Adapter\Exception\CriterionNotFoundException,
+
+    CalendArt\Adapter\Google\Event\BasicEvent,
     CalendArt\Adapter\Google\Exception\ApiErrorException,
 
-    CalendArt\Adapter\AbstractCriterion,
     CalendArt\Adapter\Google\Criterion\Field,
     CalendArt\Adapter\Google\Criterion\Collection;
 
@@ -87,6 +90,12 @@ class EventApi implements EventApiInterface
             $query = $query->merge($criterion);
         }
 
+        try {
+            $showDeleted = (bool) $query->getCriterion('showDeleted');
+        } catch (CriterionNotFoundException $e) {
+            $showDeleted = false;
+        }
+
         $query = $query->build();
 
         do {
@@ -105,7 +114,12 @@ class EventApi implements EventApiInterface
             $result = $response->json();
 
             foreach ($result['items'] as $item) {
-                $list[$item['id']] = Event::hydrate($this->calendar, $item);
+                // ignore the short cancelled recurring events
+                if (!$showDeleted && isset($item['status']) && AbstractEvent::STATUS_CANCELLED === $item['status']) {
+                    continue;
+                }
+
+                $list[$item['id']] = BasicEvent::hydrate($this->calendar, $item);
             }
 
             $nextPageToken = isset($result['nextPageToken']) ? $result['nextPageToken'] : null;
