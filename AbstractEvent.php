@@ -104,7 +104,7 @@ abstract class AbstractEvent extends BaseAbstractEvent
 
         $event = new static($calendar, $data['status']);
 
-        $event->id   = $data['status'];
+        $event->id   = $data['id'];
         $event->etag = $data['etag'];
 
         return $event;
