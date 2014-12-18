@@ -26,13 +26,18 @@ class ApiErrorException extends ErrorException
     public function __construct(Response $response)
     {
         try {
-            $json    = $response->json();
-            $message = $json['error']['message'];
+            $this->details = $response->json();
+            $message = $this->details['error']['message'];
         } catch (ParseException $e) {
             $message = $response->getReasonPhrase();
         }
 
         parent::__construct(sprintf('The request failed and returned an invalid status code ("%d") : %s', $response->getStatusCode(), $message), $response->getStatusCode());
+    }
+
+    public function getDetails()
+    {
+        return $this->details;
     }
 }
 
