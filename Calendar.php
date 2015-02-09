@@ -69,6 +69,11 @@ class Calendar extends AbstractCalendar
         return $this->nextSyncToken;
     }
 
+    public function getRaw()
+    {
+        return $this->raw;
+    }
+
     /**
      * Hydrate a new object from an array of data extracted from a returned json
      *

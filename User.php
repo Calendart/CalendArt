@@ -58,6 +58,11 @@ class User extends BaseUser
         return parent::getEmail();
     }
 
+    public function getRaw()
+    {
+        return $this->raw;
+    }
+
     public static function hydrate(array $data)
     {
         if (!isset($data['displayName'])) {
