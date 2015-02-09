@@ -25,6 +25,9 @@ class User extends BaseUser
     /** @var string user's identifier */
     private $id;
 
+    /** @var array $raw The raw response stored for this object */
+    protected $raw;
+
     public function __construct($name, $email, $id = null)
     {
         parent::__construct($name, (array) $email);
@@ -70,6 +73,8 @@ class User extends BaseUser
         if (isset($data['id'])) {
             $user->id = $data['id'];
         }
+
+        $this->raw = $data;
 
         return $user;
     }
