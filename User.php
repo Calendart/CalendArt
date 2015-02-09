@@ -79,7 +79,7 @@ class User extends BaseUser
             $user->id = $data['id'];
         }
 
-        $this->raw = $data;
+        $user->raw = $data;
 
         return $user;
     }
