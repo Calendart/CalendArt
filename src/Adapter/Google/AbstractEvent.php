@@ -78,6 +78,11 @@ abstract class AbstractEvent extends BaseAbstractEvent
         return $this->etag;
     }
 
+    public function getRaw()
+    {
+        return $this->raw;
+    }
+
     /** @return $this */
     public function addParticipation(BaseEventParticipation $participation)
     {
@@ -106,6 +111,7 @@ abstract class AbstractEvent extends BaseAbstractEvent
 
         $event->id   = $data['id'];
         $event->etag = $data['etag'];
+        $event->raw  = $data;
 
         return $event;
     }
