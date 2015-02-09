@@ -44,6 +44,9 @@ abstract class AbstractEvent extends BaseAbstractEvent
     /** @var User[] All the fetched and hydrated users, with an id as a key **/
     protected static $users = [];
 
+    /** @var array $raw The raw response stored for this object */
+    protected $raw;
+
     public function __construct(Calendar $calendar, $status = self::STATUS_TENTATIVE)
     {
         $this->status   = $status;

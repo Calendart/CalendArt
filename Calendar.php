@@ -32,6 +32,9 @@ class Calendar extends AbstractCalendar
     /** @var When fetching a list, fetch only starting a certain token */
     protected $nextSyncToken = null;
 
+    /** @var array $raw The raw response stored for this object */
+    protected $raw;
+
     public function __construct($id, $name, DateTimeZone $timeZone)
     {
         $this->id       = $id;
@@ -89,6 +92,8 @@ class Calendar extends AbstractCalendar
         if (null !== $user && isset($data['accessRole'])) {
             $calendar->addPermission(UserPermission::hydrate($calendar, $user, $data['accessRole']));
         }
+
+        $calendar->raw = $data;
 
         return $calendar;
     }
