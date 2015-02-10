@@ -4,8 +4,6 @@ CalendArt
 Interface to handle all your calendars through an unified API, whatever their
 source are (Google, Office 365, ... etc), as if it was an art. Hell yeah.
 
-**Only google calendar is currently supported !**
-
 Installation
 ============
 You have multiple ways to install CalendArt. If you are unsure what to do, go with
@@ -28,38 +26,20 @@ You have multiple ways to install CalendArt. If you are unsure what to do, go wi
 
       {
         "require": {
-          "wisembly/calendArt": "~1.0"
+          "calendArt/calendArt": "~1.0"
         }
       }
     ```
 
 3. Install via composer : `php composer.phar install`
 
-Basic Usage
-===========
-As there is only Google's adapter, we're going to base these examples on this
-one. But it should be similar to the others one, as long as they respect the
-interface provided in this package.
-
-```php
-<?php
-
-use CalendArt\Adapter\Google\GoogleAdapter,
-    CalendArt\Adapter\Google\Util\OAuth2Token;
-
-$oauth = new OAuth2Token('your-oauth2-token', 'Bearer', 3600); // You can get a OAuth2 token on google's oauth playground
-$adapter = new GoogleAdapter($oauth);
-
-$primary = $adapter->getCalendarApi()->get('primary'); // there is always a "primary" calendar on Google
-$event   = $adapter->getEventApi($primary)->getList();
-
-var_dump($primary); // Should dump a Calendar instance, with its hydrated events
-```
-
 Running Tests
 =============
 ```console
 $ php composer.phar install --dev
-$ bin/phpunit
+$ phpunit
 ```
 
+Credits
+=======
+Made with love by [@wisembly](http://wisembly.com/en/)

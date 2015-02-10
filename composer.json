@@ -1,7 +1,7 @@
 {
-    "name": "wisembly/calendart",
+    "name": "calendart/calendart",
     "type": "library",
-    "description": "Manage remote calendars (google, office 365, ...) through an unified api",
+    "description": "Manage remote calendars through an unified api",
     "keywords": ["Calendar", "Events", "Scheduler", "Schedule", "Agenda"],
     "license": "MIT",
 
@@ -18,8 +18,7 @@
         "php": ">=5.4.0",
 
         "psr/log": "~1.0",
-        "doctrine/collections": "~1.0",
-        "guzzlehttp/guzzle": "~4.1"
+        "doctrine/collections": "~1.0"
     },
 
     "require-dev": {

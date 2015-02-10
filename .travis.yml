@@ -10,8 +10,7 @@ matrix:
         - php: hhvm
 
 before_script:
-    - composer self-update
     - composer install --prefer-source -o
 
 script:
-    - bin/phpunit --coverage-text
+    - phpunit --coverage-text
