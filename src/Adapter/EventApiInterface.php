@@ -45,5 +45,12 @@ interface EventApiInterface
      * @return AbstractCalendar
      */
     public function getCalendar();
+
+    /**
+     * @param AbstractEvent $event
+     *
+     * @return AbstractEvent
+     */
+    public function persist(AbstractEvent $event);
 }
 
