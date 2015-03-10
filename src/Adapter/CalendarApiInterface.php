@@ -38,11 +38,5 @@ interface CalendarApiInterface
      */
     public function get($identifier);
 
-    /**
-     * Returns the permissions for a calendar (and replace all old permissions)
-     *
-     * @return Collection<UserPermission>
-     */
-    public function getPermissions(AbstractCalendar $calendar);
 }
 
