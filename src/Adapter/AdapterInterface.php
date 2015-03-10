@@ -28,12 +28,10 @@ interface AdapterInterface
     public function getCalendarApi();
 
     /**
-     * Get the Event API to use for this adapter (scoped to a particular calendar)
-     *
-     * @param AbstractCalendar $calendar Calendar to scope this api to
+     * Get the Event API to use for this adapter
      *
      * @return EventApiInterface
      */
-    public function getEventApi(AbstractCalendar $calendar);
+    public function getEventApi();
 }
 
