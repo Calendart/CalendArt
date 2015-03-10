@@ -27,7 +27,7 @@ interface CalendarApiInterface
      *
      * @return Collection<AbstractCalendar>
      */
-    public function getList(AbstractCriterion $criterion = null);
+    public function getList();
 
     /**
      * Returns the specific information for a given calendar
@@ -36,13 +36,13 @@ interface CalendarApiInterface
      *
      * @return AbstractCalendar
      */
-    public function get($identifier, AbstractCriterion $criterion = null);
+    public function get($identifier);
 
     /**
      * Returns the permissions for a calendar (and replace all old permissions)
      *
      * @return Collection<UserPermission>
      */
-    public function getPermissions(AbstractCalendar $calendar, AbstractCriterion $criterion = null);
+    public function getPermissions(AbstractCalendar $calendar);
 }
 
