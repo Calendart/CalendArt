@@ -40,13 +40,6 @@ interface EventApiInterface
     public function get($identifier);
 
     /**
-     * Get the associated calendar for this api
-     *
-     * @return AbstractCalendar
-     */
-    public function getCalendar();
-
-    /**
      * Make an event persistent within the provider
      *
      * @return void
