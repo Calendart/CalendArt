@@ -20,18 +20,10 @@ You have multiple ways to install CalendArt. If you are unsure what to do, go wi
 
 ### Via Composer
 1. Install composer in your project: `curl -s http://getcomposer.org/installer | php`
-2. Create a `composer.json` file (or update it) in your project root:
-
-    ```javascript
-
-      {
-        "require": {
-          "calendArt/calendArt": "~1.0"
-        }
-      }
-    ```
-
-3. Install via composer : `php composer.phar install`
+2. Run the following command:
+```
+$ composer require calendArt/calendArt
+```
 
 Running Tests
 =============
