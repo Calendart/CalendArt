@@ -47,6 +47,9 @@ abstract class AbstractEvent
     /** @var Collection<EventParticipation> Participations registered to this event */
     protected $participations;
 
+    /** @var array $raw The raw response stored for this object */
+    protected $raw;
+
     public function __construct(AbstractCalendar $calendar, User $owner, $name, Datetime $start, Datetime $end)
     {
         $this->name     = $name;
@@ -220,6 +223,16 @@ abstract class AbstractEvent
         $this->participations->removeElement($participation);
 
         return $this;
+    }
+
+    public function setRaw(array $raw)
+    {
+        $this->raw = $raw;
+    }
+
+    public function getRaw()
+    {
+        return $this->raw;
     }
 }
 
