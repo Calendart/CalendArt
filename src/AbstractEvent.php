@@ -47,6 +47,9 @@ abstract class AbstractEvent
     /** @var Collection<EventParticipation> Participations registered to this event */
     protected $participations;
 
+    /** @var Collection<Attachment> Attachments to this event */
+    protected $attachments;
+
     public function __construct(AbstractCalendar $calendar, User $owner, $name, Datetime $start, Datetime $end)
     {
         $this->name     = $name;
@@ -54,6 +57,7 @@ abstract class AbstractEvent
         $this->calendar = $calendar;
 
         $this->participations = new ArrayCollection;
+        $this->attachments = new ArrayCollection;
 
         if ($start > $end) {
             throw new InvalidArgumentException('An event cannot start after it was ended');
@@ -221,5 +225,23 @@ abstract class AbstractEvent
 
         return $this;
     }
-}
 
+    /** @return Collection<Attachment> */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /** @return $this */
+    public function addAttachment(Attachment $attachment)
+    {
+        $this->attachments->add($attachment);
+
+        return $this;
+    }
+
+    public function hasAttachments()
+    {
+        return $this->attachments->count() > 0;
+    }
+}
