@@ -10,7 +10,9 @@ matrix:
         - php: hhvm
 
 before_script:
+    - composer require --dev --no-update jakub-onderka/php-parallel-lint
     - composer install --prefer-source -o --no-interaction
 
 script:
+    - vendor/bin/parallel-lint src/ test/
     - phpunit --coverage-text
