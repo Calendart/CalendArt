@@ -10,7 +10,7 @@ matrix:
         - php: hhvm
 
 before_script:
-    - composer install --prefer-source -o
+    - composer install --prefer-source -o --no-interaction
 
 script:
     - phpunit --coverage-text
