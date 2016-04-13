@@ -41,9 +41,9 @@ interface EventApiInterface
 
     /**
      * Make an event persistent within the provider
+     * $options is an array containing request's specific options
      *
      * @return void
      */
-    public function persist(AbstractEvent $event);
+    public function persist(AbstractEvent $event, array $options = []);
 }
-
