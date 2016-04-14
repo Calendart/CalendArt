@@ -2,6 +2,6 @@
 
 namespace CalendArt\Exception;
 
-interface NotFoundInterface
+interface NotFoundInterface extends ApiErrorInterface
 {
 }
