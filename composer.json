@@ -23,11 +23,16 @@
 
     "autoload": {
         "psr-4": {
-            "CalendArt\\": ["src/", "test/"]
+            "CalendArt\\": "src/"
+        }
+    },
+
+    "autoload-dev": {
+        "psr-4": {
+            "CalendArt\\Tests\\": "tests/"
         }
     },
 
     "minimum-stability": "dev",
     "prefer-stable": true
 }
-

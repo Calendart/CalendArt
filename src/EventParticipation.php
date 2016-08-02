@@ -140,7 +140,7 @@ class EventParticipation
      */
     public function setStatus($status)
     {
-        if (!in_array($status, static::getAvailableStatuses())) {
+        if (!in_array($status, static::getAvailableStatuses(), true)) {
             throw new InvalidArgumentException(sprintf('Status not recognized ; Had "%s", expected one of "%s"', $status, implode('", "', static::getAvailableStatuses())));
         }
 
